@@ -74,15 +74,24 @@ export const BIRTHDAY_CONFIG = {
     },
     {
       id: "photo-2",
-      src: "/assets/Screenshot_20260629_004907.jpg",
-      title: "Our Precious Memories 💫",
-      subtitle: "Late night calls & endless laughs",
-      date: "29 June 2026",
-      caption: "Every call, every screenshot, every shared laugh makes this distance feel so small compared to our love.",
-      category: "Memories"
+      src: "/assets/us-together.jpg",
+      title: "Us, Right Beside You ❤️",
+      subtitle: "The warmth of your presence",
+      date: "My Favourite Place",
+      caption: "Sitting beside you, looking into your eyes, and sharing quiet moments together. You are my safe space and my entire happiness, Ammuuu.",
+      category: "Together"
     },
     {
       id: "photo-3",
+      src: "/assets/video-call-cute.jpg",
+      title: "Late Night Calls & Sweet Moments 🥱💖",
+      subtitle: "Even your sleepy yawns make me fall in love",
+      date: "Midnight Talks",
+      caption: "Countless video calls where distance disappears into laughs and sleepy smiles. No matter how far apart we are, seeing your face is the best part of every day.",
+      category: "Memories"
+    },
+    {
+      id: "photo-4",
       src: "/assets/IMG-20260621-WA0004.jpg",
       title: "The Glow In Your Eyes ✨",
       subtitle: "Pure warmth & innocence",
@@ -91,7 +100,7 @@ export const BIRTHDAY_CONFIG = {
       category: "Portraits"
     },
     {
-      id: "photo-4",
+      id: "photo-5",
       src: "/assets/IMG-20260517-WA0001.jpg",
       title: "Close To My Heart 💖",
       subtitle: "Us, exactly where I belong",
@@ -100,7 +109,7 @@ export const BIRTHDAY_CONFIG = {
       category: "Together"
     },
     {
-      id: "photo-5",
+      id: "photo-6",
       src: "/assets/First meet 28-08-2026.png",
       title: "The Day We First Met 🌹",
       subtitle: "Where our universe began",
@@ -109,31 +118,22 @@ export const BIRTHDAY_CONFIG = {
       category: "Milestones"
     },
     {
-      id: "photo-6",
+      id: "photo-7",
+      src: "/assets/Screenshot_20260629_004907.jpg",
+      title: "Our Precious Memories 💫",
+      subtitle: "Late night calls & endless laughs",
+      date: "29 June 2026",
+      caption: "Every call, every screenshot, every shared laugh makes this distance feel so small compared to our love.",
+      category: "Memories"
+    },
+    {
+      id: "photo-8",
       src: "/assets/file_000000001fe4821196382939e7696d36.png",
       title: "Every Picture Has a Story 📖",
       subtitle: "And every story begins with you",
       date: "Always & Forever",
       caption: "Every photograph is a treasure chest of emotions. Looking forward to filling thousands more albums with you.",
       category: "Memories"
-    },
-    {
-      id: "photo-7",
-      src: "/assets/krishna wallpaper.png",
-      title: "Divine Blessings & Grace 🙏",
-      subtitle: "Under God's divine shield",
-      date: "Sacred Protection",
-      caption: "Praying that God protects you, showers you with eternal health, boundless smiles, and all your heart desires.",
-      category: "Spiritual"
-    },
-    {
-      id: "photo-8",
-      src: "/assets/krishna.jpg.jpeg",
-      title: "Sacred Love Across Distance 🌸",
-      subtitle: "Bound by heart and soul",
-      date: "Timeless Bond",
-      caption: "Distance is just physical space; our souls are forever intertwined with trust and unconditional devotion.",
-      category: "Spiritual"
     }
   ] as PhotoItem[],
 
