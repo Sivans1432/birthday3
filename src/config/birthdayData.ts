@@ -18,6 +18,8 @@ export interface TimelineMilestone {
   iconName: 'heart' | 'sparkles' | 'calendar' | 'gift' | 'star'
   highlight?: boolean
   image?: string
+  imageBadge?: string
+  objectPosition?: string
 }
 
 export interface PromiseItem {
@@ -149,7 +151,9 @@ export const BIRTHDAY_CONFIG = {
       description: "From the very first moment our eyes met and words were spoken, something in my heart whispered that you were someone extraordinarily special.",
       iconName: "heart",
       highlight: true,
-      image: "/assets/First meet 28-08-2026.png"
+      image: "/assets/First meet 28-08-2026.png",
+      imageBadge: "✦ Holding Hands Forever",
+      objectPosition: "50% 48%"
     },
     {
       id: "milestone-2",
@@ -158,7 +162,10 @@ export const BIRTHDAY_CONFIG = {
       subtitle: "When you became my home",
       description: "Even when miles separated us, every message and phone call made me realize that distance could never weaken what we share. You became my safest comfort.",
       iconName: "sparkles",
-      highlight: false
+      highlight: false,
+      image: "/assets/Screenshot_20260629_004907.jpg",
+      imageBadge: "✦ Distance Disappearing",
+      objectPosition: "center 30%"
     },
     {
       id: "milestone-3",
@@ -167,7 +174,10 @@ export const BIRTHDAY_CONFIG = {
       subtitle: "Love that grows with every sunrise",
       description: "Realizing that you are not just a part of my life, but the heartbeat of my happiness. Your laughter became my favourite sound in the whole universe.",
       iconName: "star",
-      highlight: false
+      highlight: false,
+      image: "/assets/video-call-cute.jpg",
+      imageBadge: "✦ Your Sweetest Smile",
+      objectPosition: "center 40%"
     },
     {
       id: "milestone-4",
@@ -176,7 +186,10 @@ export const BIRTHDAY_CONFIG = {
       subtitle: "Celebrating the queen of my heart",
       description: "Today is the day the world was blessed with you, my Ammuuu. Even from far away, my whole soul is celebrating you with endless love.",
       iconName: "calendar",
-      highlight: true
+      highlight: true,
+      image: "/assets/IMG-20260621-WA0004.jpg",
+      imageBadge: "✦ Birthday Girl Mounika",
+      objectPosition: "center 20%"
     },
     {
       id: "milestone-5",
@@ -185,7 +198,10 @@ export const BIRTHDAY_CONFIG = {
       subtitle: "Hand in hand, for all our years",
       description: "One day very soon, this distance will be gone forever. I will stand beside you, hold you tight, light your candles, and whisper 'Happy Birthday, Maa' right in your ear.",
       iconName: "gift",
-      highlight: true
+      highlight: true,
+      image: "/assets/us-together.jpg",
+      imageBadge: "✦ Side By Side Forever",
+      objectPosition: "center 35%"
     }
   ] as TimelineMilestone[],
 

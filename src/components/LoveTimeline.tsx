@@ -124,15 +124,15 @@ const TimelineCard: React.FC<TimelineCardProps> = ({ item, index, isEven, icon }
               <img
                 src={item.image}
                 alt={item.title}
-                style={{ objectPosition: '50% 48%' }}
-                className="w-full h-80 sm:h-96 object-cover transition-transform duration-700 group-hover/img:scale-105"
+                style={{ objectPosition: item.objectPosition || 'center' }}
+                className="w-full h-72 sm:h-80 md:h-88 object-cover transition-transform duration-700 group-hover/img:scale-105"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none'
                 }}
               />
-              <div className="absolute bottom-3 right-3 px-3 py-1 rounded-full bg-black/80 backdrop-blur-md border border-amber-400/40 text-[11px] font-cinzel text-amber-200 shadow-lg flex items-center gap-1.5">
+              <div className="absolute bottom-3 right-3 px-3.5 py-1 rounded-full bg-black/80 backdrop-blur-md border border-amber-400/40 text-[11px] font-cinzel text-amber-200 shadow-lg flex items-center gap-1.5">
                 <span className="text-rose-400">♥</span>
-                <span>Two Hands Holding Forever</span>
+                <span>{item.imageBadge || 'Our Memory'}</span>
               </div>
             </div>
           )}
