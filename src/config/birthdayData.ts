@@ -6,6 +6,7 @@ export interface PhotoItem {
   date: string
   caption: string
   category?: string
+  objectPosition?: string
 }
 
 export interface TimelineMilestone {
@@ -115,7 +116,8 @@ export const BIRTHDAY_CONFIG = {
       subtitle: "Where our universe began",
       date: "28 August 2026",
       caption: "The most sacred turning point of my life. The day destiny gifted me my Ammuuu.",
-      category: "Milestones"
+      category: "Milestones",
+      objectPosition: "object-bottom"
     },
     {
       id: "photo-7",

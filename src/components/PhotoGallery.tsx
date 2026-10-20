@@ -224,7 +224,7 @@ const GalleryCard: React.FC<GalleryCardProps> = ({ photo, index, onOpen }) => {
           src={photo.src}
           alt={photo.title}
           loading="lazy"
-          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+          className={`w-full h-full object-cover ${photo.objectPosition || 'object-center'} group-hover:scale-105 transition-transform duration-700 ease-out`}
           onError={(e) => {
             const target = e.currentTarget
             target.src = '/assets/file_000000001fe4821196382939e7696d36.png'
