@@ -111,74 +111,89 @@ export const LoveLetterSection: React.FC = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20, scale: 0.96 }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
-              className="w-full max-w-3xl rounded-3xl p-6 sm:p-10 md:p-14 bg-gradient-to-b from-[#16120d] via-[#100d0a] to-[#090705] border-2 border-amber-500/40 shadow-[0_30px_90px_-20px_rgba(0,0,0,0.95),0_0_60px_rgba(212,175,55,0.2)] backdrop-blur-2xl relative"
+              className="w-full max-w-3xl rounded-3xl p-6 sm:p-10 md:p-14 bg-gradient-to-b from-[#16120d] via-[#100d0a] to-[#090705] border-2 border-amber-500/40 shadow-[0_30px_90px_-20px_rgba(0,0,0,0.95),0_0_60px_rgba(212,175,55,0.2)] backdrop-blur-2xl relative overflow-hidden"
             >
-              {/* Top seal badge */}
-              <div className="flex items-center justify-between pb-6 mb-8 border-b border-amber-500/30">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#ffd54f] to-[#aa771c] flex items-center justify-center font-cinzel font-bold text-amber-950 text-base shadow-[0_0_15px_rgba(212,175,55,0.5)]">
-                    M
+              {/* Artistic B&W Holding Hands Background with Reduced Opacity */}
+              <div
+                className="absolute inset-0 pointer-events-none z-0 bg-cover bg-center"
+                style={{
+                  backgroundImage: `url('/assets/letter-bg-hands.jpg')`,
+                  opacity: 0.14,
+                  filter: 'grayscale(100%) contrast(115%) brightness(85%)',
+                }}
+              />
+              {/* Soft dark vignette overlay to preserve perfect text readability */}
+              <div className="absolute inset-0 bg-gradient-to-b from-[#120e0a]/88 via-[#0a0806]/80 to-[#070504]/92 pointer-events-none z-0" />
+
+              {/* Main Letter Content */}
+              <div className="relative z-10">
+                {/* Top seal badge */}
+                <div className="flex items-center justify-between pb-6 mb-8 border-b border-amber-500/30">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#ffd54f] to-[#aa771c] flex items-center justify-center font-cinzel font-bold text-amber-950 text-base shadow-[0_0_15px_rgba(212,175,55,0.5)]">
+                      M
+                    </div>
+                    <div>
+                      <p className="font-cinzel text-xs uppercase tracking-widest text-amber-300">
+                        Personal Birthday Letter
+                      </p>
+                      <p className="font-serif text-sm text-amber-200/60">
+                        For Mounika (Ammuuu)
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-cinzel text-xs uppercase tracking-widest text-amber-300">
-                      Personal Birthday Letter
-                    </p>
-                    <p className="font-serif text-sm text-amber-200/60">
-                      For Mounika (Ammuuu)
-                    </p>
-                  </div>
+
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    className="px-4 py-1.5 rounded-full border border-amber-400/30 text-amber-300 hover:bg-amber-500/10 text-xs font-cinzel tracking-wider uppercase transition-colors cursor-pointer"
+                  >
+                    Fold Letter
+                  </button>
                 </div>
 
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="px-4 py-1.5 rounded-full border border-amber-400/30 text-amber-300 hover:bg-amber-500/10 text-xs font-cinzel tracking-wider uppercase transition-colors cursor-pointer"
-                >
-                  Fold Letter
-                </button>
-              </div>
+                {/* Salutation */}
+                <div className="text-center mb-8">
+                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-rose-300 tracking-wide drop-shadow-[0_0_15px_rgba(244,63,94,0.4)]">
+                    {BIRTHDAY_CONFIG.letter.salutation}
+                  </h3>
+                  <div className="w-24 h-0.5 mx-auto bg-gradient-to-r from-transparent via-amber-400/60 to-transparent mt-3" />
+                </div>
 
-              {/* Salutation */}
-              <div className="text-center mb-8">
-                <h3 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-rose-300 tracking-wide drop-shadow-[0_0_15px_rgba(244,63,94,0.4)]">
-                  {BIRTHDAY_CONFIG.letter.salutation}
-                </h3>
-                <div className="w-24 h-0.5 mx-auto bg-gradient-to-r from-transparent via-amber-400/60 to-transparent mt-3" />
-              </div>
+                {/* Letter Paragraphs (Exact Telugu-English Wording Preserved) */}
+                <div className="space-y-6 text-sm sm:text-base md:text-lg leading-relaxed text-amber-100/90 font-serif">
+                  {BIRTHDAY_CONFIG.letter.paragraphs.map((para, idx) => {
+                    // Check if paragraph contains bold emphasis
+                    const isHighlighted =
+                      para.includes('I am sorry, Maa') ||
+                      para.includes('Happiest Birthday to my Ammuuuu') ||
+                      para.includes('I may not be beside you today') ||
+                      para.includes('Love you so much!')
 
-              {/* Letter Paragraphs (Exact Telugu-English Wording Preserved) */}
-              <div className="space-y-6 text-sm sm:text-base md:text-lg leading-relaxed text-amber-100/90 font-serif">
-                {BIRTHDAY_CONFIG.letter.paragraphs.map((para, idx) => {
-                  // Check if paragraph contains bold emphasis
-                  const isHighlighted =
-                    para.includes('I am sorry, Maa') ||
-                    para.includes('Happiest Birthday to my Ammuuuu') ||
-                    para.includes('I may not be beside you today') ||
-                    para.includes('Love you so much!')
+                    return (
+                      <p
+                        key={idx}
+                        className={`leading-relaxed text-left ${
+                          isHighlighted
+                            ? 'p-4 rounded-xl bg-amber-950/30 border border-amber-500/30 font-semibold text-amber-200'
+                            : 'text-amber-100/90'
+                        }`}
+                      >
+                        {para}
+                      </p>
+                    )
+                  })}
+                </div>
 
-                  return (
-                    <p
-                      key={idx}
-                      className={`leading-relaxed text-left ${
-                        isHighlighted
-                          ? 'p-4 rounded-xl bg-amber-950/30 border border-amber-500/30 font-semibold text-amber-200'
-                          : 'text-amber-100/90'
-                      }`}
-                    >
-                      {para}
-                    </p>
-                  )
-                })}
-              </div>
-
-              {/* Signoff */}
-              <div className="mt-12 pt-8 border-t border-amber-500/30 flex flex-col items-center text-center space-y-2">
-                <Heart size={24} className="text-rose-500 fill-rose-500/80 animate-pulse" />
-                <p className="font-script text-3xl sm:text-4xl text-rose-400">
-                  {BIRTHDAY_CONFIG.letter.signoff}
-                </p>
-                <p className="font-cinzel text-xs uppercase tracking-[0.3em] text-amber-400/70 pt-2">
-                  Forever & Always Yours
-                </p>
+                {/* Signoff */}
+                <div className="mt-12 pt-8 border-t border-amber-500/30 flex flex-col items-center text-center space-y-2">
+                  <Heart size={24} className="text-rose-500 fill-rose-500/80 animate-pulse" />
+                  <p className="font-script text-3xl sm:text-4xl text-rose-400">
+                    {BIRTHDAY_CONFIG.letter.signoff}
+                  </p>
+                  <p className="font-cinzel text-xs uppercase tracking-[0.3em] text-amber-400/70 pt-2">
+                    Forever & Always Yours
+                  </p>
+                </div>
               </div>
             </motion.div>
           )}
