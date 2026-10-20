@@ -117,7 +117,7 @@ export const BIRTHDAY_CONFIG = {
       date: "28 August 2026",
       caption: "The most sacred turning point of my life. The day destiny gifted me my Ammuuu.",
       category: "Milestones",
-      objectPosition: "object-bottom"
+      objectPosition: "50% 48%"
     },
     {
       id: "photo-7",

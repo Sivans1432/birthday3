@@ -120,17 +120,19 @@ const TimelineCard: React.FC<TimelineCardProps> = ({ item, index, isEven, icon }
 
           {/* Optional attached milestone image */}
           {item.image && (
-            <div className="mt-4 rounded-xl overflow-hidden border border-amber-500/30 bg-black/60 shadow-lg group/img relative">
+            <div className="mt-4 rounded-2xl overflow-hidden border border-amber-500/40 bg-black/80 shadow-2xl group/img relative">
               <img
                 src={item.image}
                 alt={item.title}
-                className="w-full h-64 sm:h-72 md:h-80 object-cover object-bottom transition-transform duration-500 group-hover/img:scale-105"
+                style={{ objectPosition: '50% 48%' }}
+                className="w-full h-80 sm:h-96 object-cover transition-transform duration-700 group-hover/img:scale-105"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none'
                 }}
               />
-              <div className="absolute bottom-2.5 right-2.5 px-3 py-1 rounded-md bg-black/75 backdrop-blur-md border border-amber-400/30 text-[11px] font-cinzel text-amber-200 shadow-md">
-                ✦ Holding Hands
+              <div className="absolute bottom-3 right-3 px-3 py-1 rounded-full bg-black/80 backdrop-blur-md border border-amber-400/40 text-[11px] font-cinzel text-amber-200 shadow-lg flex items-center gap-1.5">
+                <span className="text-rose-400">♥</span>
+                <span>Two Hands Holding Forever</span>
               </div>
             </div>
           )}
