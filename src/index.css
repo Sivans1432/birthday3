@@ -1,0 +1,185 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-serif: 'Playfair Display', Georgia, serif;
+    --font-cinzel: 'Cinzel', serif;
+    --font-script: 'Great Vibes', cursive;
+    --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --font-telugu: 'Noto Sans Telugu', 'Plus Jakarta Sans', sans-serif;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background-color: #060504;
+    color: #f7eed7;
+    font-family: var(--font-sans);
+  }
+
+  body {
+    background-color: #060504;
+    background-image: 
+      radial-gradient(circle at 50% 0%, rgba(180, 130, 40, 0.15), transparent 45%),
+      radial-gradient(circle at 10% 40%, rgba(150, 20, 40, 0.08), transparent 35%),
+      radial-gradient(circle at 90% 70%, rgba(180, 130, 40, 0.08), transparent 40%);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Custom luxury scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #090807;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #d4af37, #855e16);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #f3d069, #a67c1e);
+  }
+}
+
+/* Luxury typography utilities */
+.font-cinzel {
+  font-family: var(--font-cinzel);
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.font-script {
+  font-family: var(--font-script);
+}
+
+.font-telugu {
+  font-family: var(--font-telugu);
+}
+
+/* Metallic gold text gradients */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #fff7d6 0%, #f6d167 25%, #dfba54 50%, #c49622 75%, #ecd281 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gold-bright {
+  background: linear-gradient(135deg, #ffffff 0%, #ffe99b 30%, #f5cf65 60%, #ffdf79 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-rose-gold {
+  background: linear-gradient(135deg, #fff1f1 0%, #f7a5a5 35%, #d9536f 70%, #ffd4d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Metallic button backgrounds */
+.bg-gold-btn {
+  background: linear-gradient(135deg, #ebd07b 0%, #d4af37 40%, #b8860b 80%, #ddb747 100%);
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bg-gold-btn:hover {
+  background: linear-gradient(135deg, #fdf0bf 0%, #e2be4b 40%, #c69415 80%, #eed06d 100%);
+  box-shadow: 0 0 35px rgba(212, 175, 55, 0.55), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px) scale(1.02);
+}
+
+.bg-gold-btn:active {
+  transform: translateY(0px) scale(0.99);
+}
+
+/* Glassmorphism Luxury Cards */
+.gold-card {
+  background: linear-gradient(145deg, rgba(22, 18, 14, 0.85) 0%, rgba(12, 10, 8, 0.92) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.7), 0 0 20px rgba(212, 175, 55, 0.08);
+}
+
+.gold-card-hover {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gold-card-hover:hover {
+  border-color: rgba(212, 175, 55, 0.45);
+  box-shadow: 0 22px 45px -8px rgba(0, 0, 0, 0.85), 0 0 30px rgba(212, 175, 55, 0.18);
+  transform: translateY(-4px);
+}
+
+/* Glowing accents */
+.gold-glow {
+  filter: drop-shadow(0 0 18px rgba(212, 175, 55, 0.45));
+}
+
+.red-glow {
+  filter: drop-shadow(0 0 20px rgba(239, 68, 68, 0.55));
+}
+
+/* Subtle Shimmer Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,223,128,0.2) 50%, rgba(255,255,255,0) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 4s infinite linear;
+}
+
+/* 3D Candle Flame animation */
+@keyframes flameFlicker {
+  0%, 100% {
+    transform: scale(1) rotate(-1deg);
+    opacity: 0.95;
+    filter: drop-shadow(0 0 10px #f59e0b) drop-shadow(0 0 22px #ef4444);
+  }
+  25% {
+    transform: scale(1.08, 0.94) rotate(1.5deg);
+    opacity: 1;
+    filter: drop-shadow(0 0 14px #fbbf24) drop-shadow(0 0 28px #f97316);
+  }
+  50% {
+    transform: scale(0.96, 1.05) rotate(-0.5deg);
+    opacity: 0.9;
+    filter: drop-shadow(0 0 9px #f59e0b) drop-shadow(0 0 20px #ef4444);
+  }
+  75% {
+    transform: scale(1.04, 0.97) rotate(1deg);
+    opacity: 0.98;
+    filter: drop-shadow(0 0 12px #fbbf24) drop-shadow(0 0 25px #f97316);
+  }
+}
+
+.flame-anim {
+  animation: flameFlicker 0.4s infinite ease-in-out;
+  transform-origin: center bottom;
+}
+
+/* Pulse animation for glowing hearts */
+@keyframes heartPulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 15px rgba(225, 29, 72, 0.45));
+  }
+  50% {
+    transform: scale(1.07);
+    filter: drop-shadow(0 0 28px rgba(225, 29, 72, 0.75));
+  }
+}
+
+.pulse-heart {
+  animation: heartPulse 2.2s infinite ease-in-out;
+}
