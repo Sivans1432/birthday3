@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Sparkles, Flame, Wind, RotateCcw } from 'lucide-react'
+import { Sparkles, Flame, Wind, RotateCcw, Maximize2, Download, X, Heart } from 'lucide-react'
 import { triggerGrandCelebration, triggerGoldenSparks } from '../utils/confettiFireworks'
 import { romanticAudio } from '../utils/audioManager'
 
@@ -9,6 +9,7 @@ export const Interactive3DCake: React.FC = () => {
   const mountRef = useRef<HTMLDivElement>(null)
   const [candlesLit, setCandlesLit] = useState<boolean[]>([true, true, true])
   const [wishMade, setWishMade] = useState<boolean>(false)
+  const [showPosterModal, setShowPosterModal] = useState<boolean>(false)
   const sceneRef = useRef<THREE.Scene | null>(null)
   const flamesRef = useRef<(THREE.Mesh | THREE.Group)[]>([])
   const lightsRef = useRef<THREE.PointLight[]>([])
@@ -415,6 +416,14 @@ export const Interactive3DCake: React.FC = () => {
     setCandlesLit((prev) => {
       const next = [...prev]
       next[idx] = false
+      if (next.every((lit) => !lit)) {
+        setWishMade(true)
+        romanticAudio.playWishChime()
+        triggerGoldenSparks(0.5, 0.45)
+        setTimeout(() => {
+          triggerGrandCelebration()
+        }, 250)
+      }
       return next
     })
     triggerGoldenSparks(0.5, 0.4)
@@ -516,31 +525,146 @@ export const Interactive3DCake: React.FC = () => {
           )}
         </div>
 
-        {/* Wish Revealed Card */}
+        {/* Wish & Grand Birthday Poster Reveal */}
         <AnimatePresence>
           {wishMade && (
+            <div className="w-full flex flex-col items-center">
+              {/* Wish Revealed Card */}
+              <motion.div
+                initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.8 }}
+                className="mt-8 max-w-lg w-full p-6 rounded-2xl gold-card border-amber-400/50 shadow-[0_0_35px_rgba(212,175,55,0.25)] relative"
+              >
+                <div className="flex items-center justify-center gap-2 text-rose-400 mb-2">
+                  <Sparkles size={18} />
+                  <span className="font-cinzel text-xs uppercase tracking-widest text-amber-300">
+                    Wish Whispered To The Stars
+                  </span>
+                  <Sparkles size={18} />
+                </div>
+
+                <p className="font-serif text-lg md:text-xl text-white font-medium mb-3">
+                  “May every single prayer, dream, and unspoken wish in your beautiful heart come true, Ammuuu! 💖✨”
+                </p>
+
+                <p className="text-xs text-amber-200/80 font-telugu leading-relaxed">
+                  Nee life lo nuvvu anukunna dreams anni nijam avvaali. Nee face lo smile eppudu alage undaali! 🙏🏻💗
+                </p>
+              </motion.div>
+
+              {/* Grand Birthday Surprise Poster Reveal */}
+              <motion.div
+                initial={{ opacity: 0, y: 30, scale: 0.92 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.92 }}
+                transition={{ duration: 0.9, delay: 0.3 }}
+                className="mt-8 w-full max-w-xl p-5 sm:p-7 rounded-3xl gold-card border-2 border-amber-400/60 shadow-[0_0_60px_rgba(212,175,55,0.4)] relative overflow-hidden flex flex-col items-center"
+              >
+                {/* Glow behind frame */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/10 via-rose-500/10 to-amber-500/10 animate-shimmer pointer-events-none" />
+
+                {/* Badge Header */}
+                <div className="relative z-10 flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500/20 via-rose-500/20 to-amber-500/20 border border-amber-400/40">
+                  <Heart size={14} className="text-rose-500 fill-rose-500 animate-pulse" />
+                  <span className="font-cinzel text-xs uppercase tracking-[0.2em] text-amber-200 font-bold">
+                    A Special Surprise Keepsake For Ammuuu
+                  </span>
+                  <Sparkles size={14} className="text-amber-400" />
+                </div>
+
+                {/* Poster Frame */}
+                <div
+                  onClick={() => setShowPosterModal(true)}
+                  className="group/poster relative w-full max-w-md aspect-[2/3] rounded-2xl overflow-hidden border-2 border-amber-400/50 shadow-2xl cursor-pointer bg-black/90 transition-transform duration-500 hover:scale-[1.02]"
+                >
+                  <img
+                    src="/assets/birthday-poster.jpg"
+                    alt="Happy Birthday Ammuu Grand Poster"
+                    className="w-full h-full object-cover group-hover/poster:scale-105 transition-transform duration-700 ease-out"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent opacity-0 group-hover/poster:opacity-100 transition-opacity duration-300 flex items-end justify-between p-4">
+                    <span className="text-xs font-cinzel text-amber-200 tracking-wider">
+                      Tap to view in full resolution
+                    </span>
+                    <div className="p-2 rounded-full bg-amber-500/40 border border-amber-400/60 text-amber-200">
+                      <Maximize2 size={18} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="relative z-10 mt-5 flex flex-wrap items-center justify-center gap-3 w-full">
+                  <button
+                    onClick={() => setShowPosterModal(true)}
+                    className="px-6 py-2.5 rounded-full bg-gold-btn text-amber-950 font-cinzel font-bold text-xs uppercase tracking-wider shadow-lg flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform"
+                  >
+                    <Maximize2 size={14} />
+                    <span>View Fullscreen Poster</span>
+                  </button>
+                  <a
+                    href="/assets/birthday-poster.jpg"
+                    download="Happy-Birthday-Ammuuu.jpg"
+                    className="px-5 py-2.5 rounded-full bg-amber-950/70 border border-amber-400/40 text-amber-200 font-cinzel font-semibold text-xs uppercase tracking-wider hover:bg-amber-900/60 flex items-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <Download size={14} />
+                    <span>Save Poster</span>
+                  </a>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+
+        {/* Fullscreen Poster Lightbox Modal */}
+        <AnimatePresence>
+          {showPosterModal && (
             <motion.div
-              initial={{ opacity: 0, y: 20, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.8 }}
-              className="mt-8 max-w-lg p-6 rounded-2xl gold-card border-amber-400/50 shadow-[0_0_35px_rgba(212,175,55,0.25)] relative"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-2xl p-4 sm:p-6"
+              onClick={() => setShowPosterModal(false)}
             >
-              <div className="flex items-center justify-center gap-2 text-rose-400 mb-2">
-                <Sparkles size={18} />
-                <span className="font-cinzel text-xs uppercase tracking-widest text-amber-300">
-                  Wish Whispered To The Stars
-                </span>
-                <Sparkles size={18} />
-              </div>
+              <button
+                onClick={() => setShowPosterModal(false)}
+                className="absolute top-6 right-6 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-all cursor-pointer"
+                title="Close"
+              >
+                <X size={24} />
+              </button>
 
-              <p className="font-serif text-lg md:text-xl text-white font-medium mb-3">
-                “May every single prayer, dream, and unspoken wish in your beautiful heart come true, Ammuuu! 💖✨”
-              </p>
-
-              <p className="text-xs text-amber-200/80 font-telugu leading-relaxed">
-                Nee life lo nuvvu anukunna dreams anni nijam avvaali. Nee face lo smile eppudu alage undaali! 🙏🏻💗
-              </p>
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="relative max-w-xl max-h-[92vh] flex flex-col items-center bg-[#0d0a08] border border-amber-500/50 rounded-3xl overflow-hidden shadow-[0_0_80px_rgba(212,175,55,0.4)]"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="relative max-h-[78vh] overflow-hidden flex items-center justify-center p-2 sm:p-3">
+                  <img
+                    src="/assets/birthday-poster.jpg"
+                    alt="Happy Birthday Ammuu Full Poster"
+                    className="max-h-[75vh] w-auto object-contain rounded-xl select-none shadow-2xl"
+                  />
+                </div>
+                <div className="w-full p-4 sm:p-5 bg-gradient-to-b from-[#140f0c] to-[#0a0806] border-t border-amber-500/30 flex items-center justify-between gap-3">
+                  <div className="text-left">
+                    <p className="font-cinzel text-sm sm:text-base font-bold text-white">Happy Birthday, Ammuuu ❤️</p>
+                    <p className="text-xs text-amber-200/70 font-serif italic">My Ammuu • My Happiness • 27 October</p>
+                  </div>
+                  <a
+                    href="/assets/birthday-poster.jpg"
+                    download="Happy-Birthday-Ammuuu.jpg"
+                    className="px-4 py-2 rounded-full bg-gold-btn text-amber-950 font-cinzel font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 cursor-pointer shadow-md hover:scale-105 transition-transform"
+                  >
+                    <Download size={14} />
+                    <span>Download</span>
+                  </a>
+                </div>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>

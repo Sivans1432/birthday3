@@ -113,17 +113,16 @@ export const LoveLetterSection: React.FC = () => {
               transition={{ duration: 0.8, ease: 'easeOut' }}
               className="w-full max-w-3xl rounded-3xl p-6 sm:p-10 md:p-14 bg-gradient-to-b from-[#16120d] via-[#100d0a] to-[#090705] border-2 border-amber-500/40 shadow-[0_30px_90px_-20px_rgba(0,0,0,0.95),0_0_60px_rgba(212,175,55,0.2)] backdrop-blur-2xl relative overflow-hidden"
             >
-              {/* Artistic B&W Holding Hands Background with Reduced Opacity */}
-              <div
-                className="absolute inset-0 pointer-events-none z-0 bg-cover bg-center"
-                style={{
-                  backgroundImage: `url('/assets/letter-bg-hands.jpg')`,
-                  opacity: 0.14,
-                  filter: 'grayscale(100%) contrast(115%) brightness(85%)',
-                }}
-              />
-              {/* Soft dark vignette overlay to preserve perfect text readability */}
-              <div className="absolute inset-0 bg-gradient-to-b from-[#120e0a]/88 via-[#0a0806]/80 to-[#070504]/92 pointer-events-none z-0" />
+              {/* Clearly Visible B&W Holding Hands Photo Background */}
+              <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden select-none">
+                <img
+                  src="/assets/letter-bg-hands.jpg"
+                  alt="Holding hands background"
+                  className="w-full h-full object-cover object-[center_42%] opacity-40 brightness-115 contrast-125 scale-102"
+                />
+                {/* Balanced gradient overlay so photo is clearly visible while text remains 100% sharp */}
+                <div className="absolute inset-0 bg-gradient-to-b from-[#0c0907]/65 via-[#070504]/45 to-[#0b0806]/70" />
+              </div>
 
               {/* Main Letter Content */}
               <div className="relative z-10">
@@ -172,10 +171,10 @@ export const LoveLetterSection: React.FC = () => {
                     return (
                       <p
                         key={idx}
-                        className={`leading-relaxed text-left ${
+                        className={`leading-relaxed text-left drop-shadow-[0_2px_5px_rgba(0,0,0,0.95)] ${
                           isHighlighted
-                            ? 'p-4 rounded-xl bg-amber-950/30 border border-amber-500/30 font-semibold text-amber-200'
-                            : 'text-amber-100/90'
+                            ? 'p-4 rounded-xl bg-amber-950/50 border border-amber-500/40 font-semibold text-amber-200 backdrop-blur-[2px]'
+                            : 'text-amber-100/95 font-medium'
                         }`}
                       >
                         {para}
