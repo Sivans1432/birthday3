@@ -345,10 +345,10 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
             setEnteredPin('')
             setPinState('idle')
 
-            // Trigger countdown celebration preview sequence!
+            // Trigger 10-second countdown celebration preview sequence!
             celebrationTriggeredRef.current = false
             setStage('COUNTDOWN')
-            setTargetTimestamp(Date.now() + 3000) // 3-second countdown into real crackers blast
+            setTargetTimestamp(Date.now() + 10000) // 10-second countdown into real crackers blast
           }, 450)
         } else {
           setPinState('error')
@@ -402,8 +402,8 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
         }}
         exit={{ opacity: 0 }}
         transition={{ duration: 1.5, ease: 'easeInOut' }}
-        className="fixed inset-0 z-50 w-screen h-screen min-h-screen bg-[#050403] text-[#f7eed7] flex flex-col items-center justify-center overflow-hidden select-none"
-        style={{ touchAction: 'none' }}
+        className="fixed inset-0 z-50 w-full h-[100dvh] min-h-[100dvh] bg-[#050403] text-[#f7eed7] flex flex-col items-center justify-center overflow-y-auto overflow-x-hidden select-none py-4 sm:py-6"
+        style={{ touchAction: 'manipulation' }}
       >
         {/* ============================================================== */}
         {/* REAL CRACKERS BLAST VIDEO BACKGROUND                           */}
@@ -574,6 +574,23 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
             >
               Target: October 27, 2026 · 12:00:00 AM IST
             </motion.p>
+
+            {/* Preview 10s Countdown Option (Visible on Mobile, Tablet & Laptop) */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="mt-5 sm:mt-7 flex justify-center"
+            >
+              <button
+                onClick={() => setShowPinModal(true)}
+                className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-amber-500/40 bg-[#0d0c12]/80 hover:bg-amber-950/60 text-amber-300 hover:text-amber-200 text-xs sm:text-sm font-cinzel tracking-wider uppercase backdrop-blur-md shadow-[0_0_25px_rgba(212,175,55,0.25)] hover:border-amber-400 cursor-pointer active:scale-95 transition-all"
+                title="Tap to enter 4-digit PIN (4410) and preview 10s countdown"
+              >
+                <Lock size={14} className="text-amber-400 group-hover:scale-110 transition-transform" />
+                <span>Preview 10s Countdown</span>
+              </button>
+            </motion.div>
           </div>
         )}
 
@@ -682,7 +699,7 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
-              className="relative w-full max-w-[340px] sm:max-w-[360px] bg-[#0e0d16] border border-white/10 rounded-[32px] p-6 sm:p-7 shadow-[0_25px_70px_rgba(0,0,0,0.95)] flex flex-col items-center select-none"
+              className="relative w-full max-w-[340px] sm:max-w-[360px] max-h-[92dvh] overflow-y-auto bg-[#0e0d16] border border-white/10 rounded-[32px] p-6 sm:p-7 shadow-[0_25px_70px_rgba(0,0,0,0.95)] flex flex-col items-center select-none"
             >
               {/* Close Button */}
               <button
