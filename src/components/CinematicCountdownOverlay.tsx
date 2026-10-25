@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Music, Sparkles, Heart, Crown, Volume2, VolumeX, Delete, Lock, X } from 'lucide-react'
+import { Music, Sparkles, Heart, Crown, Volume2, VolumeX, Delete, X } from 'lucide-react'
 import { BIRTHDAY_CONFIG } from '../config/birthdayData'
 import { romanticAudio } from '../utils/audioManager'
 
@@ -574,23 +574,6 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
             >
               Target: October 27, 2026 · 12:00:00 AM IST
             </motion.p>
-
-            {/* Preview 10s Countdown Option (Visible on Mobile, Tablet & Laptop) */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="mt-5 sm:mt-7 flex justify-center"
-            >
-              <button
-                onClick={() => setShowPinModal(true)}
-                className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-amber-500/40 bg-[#0d0c12]/80 hover:bg-amber-950/60 text-amber-300 hover:text-amber-200 text-xs sm:text-sm font-cinzel tracking-wider uppercase backdrop-blur-md shadow-[0_0_25px_rgba(212,175,55,0.25)] hover:border-amber-400 cursor-pointer active:scale-95 transition-all"
-                title="Tap to enter 4-digit PIN (4410) and preview 10s countdown"
-              >
-                <Lock size={14} className="text-amber-400 group-hover:scale-110 transition-transform" />
-                <span>Preview 10s Countdown</span>
-              </button>
-            </motion.div>
           </div>
         )}
 
@@ -678,16 +661,20 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
         )}
 
         {/* ============================================================== */}
-        {/* SUBTLE SECRET LOCK ICON IN BOTTOM RIGHT CORNER (OPENS PIN UI)  */}
+        {/* SLEEK COMPACT BOTTOM PREVIEW BUTTON (MATCHING UPLOADED PHOTO)  */}
         {/* ============================================================== */}
-        <button
-          onClick={() => setShowPinModal(true)}
-          className="absolute bottom-4 right-4 z-30 p-2.5 rounded-full text-amber-400/25 hover:text-amber-300 hover:bg-white/5 transition-all cursor-pointer"
-          title="Security PIN"
-          aria-label="Enter PIN"
-        >
-          <Lock size={15} />
-        </button>
+        {stage === 'COUNTDOWN' && (
+          <div className="absolute bottom-4 sm:bottom-6 inset-x-0 flex items-center justify-center z-30 pointer-events-auto px-4">
+            <button
+              onClick={() => setShowPinModal(true)}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] sm:text-[11px] font-cinzel font-medium tracking-[0.14em] text-amber-400/80 hover:text-amber-200 border border-white/10 hover:border-amber-400/50 bg-black/60 backdrop-blur-sm transition-all cursor-pointer shadow-[0_2px_12px_rgba(0,0,0,0.6)] active:scale-95"
+              title="Preview 10s Countdown (PIN: 4410)"
+            >
+              <span className="text-amber-400 text-xs leading-none">⚡</span>
+              <span>PREVIEW 10S COUNTDOWN</span>
+            </button>
+          </div>
+        )}
 
         {/* ============================================================== */}
         {/* 4-DIGIT PIN SECURITY KEYPAD MODAL (MATCHING UPLOADED UI)       */}
