@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Music, Sparkles, Heart, Crown, Volume2, VolumeX, Upload } from 'lucide-react'
+import { Music, Sparkles, Heart, Crown, Volume2, VolumeX, Delete, Lock, X } from 'lucide-react'
 import { BIRTHDAY_CONFIG } from '../config/birthdayData'
 import { romanticAudio } from '../utils/audioManager'
 
@@ -18,14 +18,23 @@ interface TimeLeft {
   totalMs: number
 }
 
+const SECRET_PIN = '4410'
+
 export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps> = ({
   onRevealComplete
 }) => {
   const [isPlayingMusic, setIsPlayingMusic] = useState<boolean>(false)
   const [stage, setStage] = useState<RevealStage>('COUNTDOWN')
-  const [videoSrc, setVideoSrc] = useState<string>(BIRTHDAY_CONFIG.crackersVideo || '/assets/crackers-blast.mp4')
+  const [videoSrc] = useState<string>(BIRTHDAY_CONFIG.crackersVideo || '/assets/crackers-blast.mp4')
   const [isVideoMuted, setIsVideoMuted] = useState<boolean>(false)
   const [videoLoadError, setVideoLoadError] = useState<boolean>(false)
+
+  // PIN security keypad modal state
+  const [showPinModal, setShowPinModal] = useState<boolean>(false)
+  const [enteredPin, setEnteredPin] = useState<string>('')
+  const [pinState, setPinState] = useState<'idle' | 'success' | 'error'>('idle')
+  const [activeKey, setActiveKey] = useState<string | null>(null)
+
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({
     days: 0,
     hours: 0,
@@ -49,8 +58,6 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
   const celebrationTriggeredRef = useRef<boolean>(false)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const videoRef = useRef<HTMLVideoElement | null>(null)
-  const fileInputRef = useRef<HTMLInputElement | null>(null)
-  const isTestMode = targetTimestamp <= Date.now() + 60000 && targetTimestamp > Date.now() - 30000
 
   // 1. Lock body and html scroll when overlay is active
   useEffect(() => {
@@ -313,26 +320,73 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
     }
   }
 
-  // Allow selecting video directly from PC/phone
-  const handleVideoFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      const url = URL.createObjectURL(file)
-      setVideoSrc(url)
-      setVideoLoadError(false)
-      // Automatically trigger 5s test preview with the selected video
-      celebrationTriggeredRef.current = false
-      setStage('COUNTDOWN')
-      setTargetTimestamp(Date.now() + 5000)
-    }
-  }
+  // PIN Keypad Handling
+  const handleKeyPadPress = useCallback((val: string) => {
+    if (pinState !== 'idle') return
 
-  // Quick 10-second test countdown trigger
-  const triggerTestCountdown = () => {
-    celebrationTriggeredRef.current = false
-    setStage('COUNTDOWN')
-    setTargetTimestamp(Date.now() + 10000)
-  }
+    if (val === 'backspace') {
+      setEnteredPin((prev) => prev.slice(0, -1))
+      return
+    }
+
+    setEnteredPin((prev) => {
+      if (prev.length >= 4) return prev
+      const nextPin = prev + val
+
+      if (nextPin.length === 4) {
+        if (nextPin === SECRET_PIN) {
+          setPinState('success')
+          try {
+            romanticAudio.playWishChime()
+          } catch {}
+
+          setTimeout(() => {
+            setShowPinModal(false)
+            setEnteredPin('')
+            setPinState('idle')
+
+            // Trigger countdown celebration preview sequence!
+            celebrationTriggeredRef.current = false
+            setStage('COUNTDOWN')
+            setTargetTimestamp(Date.now() + 3000) // 3-second countdown into real crackers blast
+          }, 450)
+        } else {
+          setPinState('error')
+          setTimeout(() => {
+            setEnteredPin('')
+            setPinState('idle')
+          }, 700)
+        }
+      }
+      return nextPin
+    })
+  }, [pinState])
+
+  // Support physical keyboard typing for PIN
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!showPinModal) {
+        // Pressing P or typing 4 opens PIN modal
+        if (e.key === 'p' || e.key === 'P') {
+          setShowPinModal(true)
+        }
+        return
+      }
+
+      if (e.key >= '0' && e.key <= '9') {
+        handleKeyPadPress(e.key)
+      } else if (e.key === 'Backspace') {
+        handleKeyPadPress('backspace')
+      } else if (e.key === 'Escape') {
+        setShowPinModal(false)
+        setEnteredPin('')
+        setPinState('idle')
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [showPinModal, handleKeyPadPress])
 
   if (stage === 'DONE') {
     return null
@@ -448,19 +502,18 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
         {/* ============================================================== */}
         {stage === 'COUNTDOWN' && (
           <div className="relative z-10 max-w-4xl w-full px-6 flex flex-col items-center text-center animate-fade-in">
-            {/* Top Royal Crown / Heart Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, delay: 0.1 }}
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-amber-500/40 bg-amber-950/30 backdrop-blur-md mb-8 shadow-[0_0_20px_rgba(212,175,55,0.2)]"
+            {/* Top Royal Crown / Heart Badge (Clicking opens secret PIN modal) */}
+            <button
+              onClick={() => setShowPinModal(true)}
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-amber-500/40 bg-amber-950/30 backdrop-blur-md mb-8 shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:border-amber-400/80 transition-all cursor-pointer"
+              title="Click to enter PIN: 4410"
             >
               <Crown className="w-4 h-4 text-amber-400 animate-pulse" />
               <span className="font-cinzel text-xs uppercase tracking-[0.25em] text-amber-200 font-semibold">
                 FOR MY AMMUUU 👑
               </span>
               <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500 animate-pulse" />
-            </motion.div>
+            </button>
 
             {/* Opening Teaser Text */}
             <motion.h2
@@ -589,8 +642,7 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
                 className="mb-4 px-4 py-2 rounded-xl bg-amber-950/60 border border-amber-500/40 text-amber-300 text-xs font-sans max-w-md"
               >
                 Place your crackers blast video as{' '}
-                <span className="font-mono text-white">public/assets/crackers-blast.mp4</span> or click
-                &quot;Select Video File&quot; below.
+                <span className="font-mono text-white">public/assets/crackers-blast.mp4</span>.
               </motion.div>
             )}
 
@@ -608,34 +660,157 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
           </div>
         )}
 
-        {/* Hidden File Input to select/test crackers video easily from device */}
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="video/mp4,video/webm,video/mov,video/*"
-          onChange={handleVideoFileSelected}
-          className="hidden"
-        />
+        {/* ============================================================== */}
+        {/* SUBTLE SECRET LOCK ICON IN BOTTOM RIGHT CORNER (OPENS PIN UI)  */}
+        {/* ============================================================== */}
+        <button
+          onClick={() => setShowPinModal(true)}
+          className="absolute bottom-4 right-4 z-30 p-2.5 rounded-full text-amber-400/25 hover:text-amber-300 hover:bg-white/5 transition-all cursor-pointer"
+          title="Security PIN"
+          aria-label="Enter PIN"
+        >
+          <Lock size={15} />
+        </button>
 
-        {/* Bottom Dev / Preview Helper Toolbar */}
-        <div className="absolute bottom-4 inset-x-0 flex items-center justify-center gap-3 z-30">
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-cinzel tracking-wider text-amber-400/60 hover:text-amber-300 hover:border-amber-400/50 border border-white/10 bg-black/40 backdrop-blur-sm transition-all cursor-pointer"
-            title="Choose a real crackers blast video from your device to test"
-          >
-            <Upload size={12} />
-            <span>Select Crackers Video</span>
-          </button>
+        {/* ============================================================== */}
+        {/* 4-DIGIT PIN SECURITY KEYPAD MODAL (MATCHING UPLOADED UI)       */}
+        {/* ============================================================== */}
+        {showPinModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+              className="relative w-full max-w-[340px] sm:max-w-[360px] bg-[#0e0d16] border border-white/10 rounded-[32px] p-6 sm:p-7 shadow-[0_25px_70px_rgba(0,0,0,0.95)] flex flex-col items-center select-none"
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => {
+                  setShowPinModal(false)
+                  setEnteredPin('')
+                  setPinState('idle')
+                }}
+                className="absolute top-4 right-4 p-2 text-white/40 hover:text-white transition-colors cursor-pointer"
+                aria-label="Close"
+              >
+                <X size={18} />
+              </button>
 
-          <button
-            onClick={triggerTestCountdown}
-            className="px-3 py-1 rounded-full text-[11px] font-cinzel tracking-wider text-amber-400/60 hover:text-amber-300 hover:border-amber-400/50 border border-white/10 bg-black/40 backdrop-blur-sm transition-all cursor-pointer"
-            title="Preview the 10-second countdown with real crackers video reveal"
-          >
-            {isTestMode ? '⏳ Test Active (10s)' : '⚡ Preview 10s Countdown'}
-          </button>
-        </div>
+              {/* Header Title & Subtitle (matching user uploaded image) */}
+              <h3 className="text-lg font-medium text-white/95 text-center mt-1 mb-1">
+                Choose a 4 Digit Password
+              </h3>
+              <p className="text-[11px] sm:text-xs text-white/45 text-center max-w-[260px] leading-relaxed mb-6 font-normal">
+                This Password will be used as security measure to prevent unauthorized access
+              </p>
+
+              {/* 4 Digit Entry Boxes */}
+              <motion.div
+                animate={
+                  pinState === 'error'
+                    ? { x: [-12, 12, -8, 8, -4, 4, 0] }
+                    : {}
+                }
+                transition={{ duration: 0.4 }}
+                className="flex items-center justify-center gap-3.5 mb-7"
+              >
+                {[0, 1, 2, 3].map((idx) => {
+                  const isFilled = enteredPin.length > idx
+                  const isActive = enteredPin.length === idx && pinState === 'idle'
+                  const isSuccess = pinState === 'success'
+                  const isError = pinState === 'error'
+
+                  return (
+                    <div
+                      key={idx}
+                      className={`w-13 h-13 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-all duration-200 ${
+                        isError
+                          ? 'border-2 border-red-500 bg-red-950/20 shadow-[0_0_15px_rgba(239,68,68,0.4)]'
+                          : isSuccess
+                          ? 'border-2 border-emerald-400 bg-emerald-950/20 shadow-[0_0_15px_rgba(52,211,153,0.5)]'
+                          : isActive
+                          ? 'border-2 border-amber-400 bg-[#171624] shadow-[0_0_14px_rgba(245,158,11,0.35)]'
+                          : 'border border-white/5 bg-[#171624]'
+                      }`}
+                    >
+                      {isFilled && (
+                        <div
+                          className={`w-3.5 h-3.5 rounded-full transition-transform scale-100 ${
+                            isSuccess
+                              ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]'
+                              : isError
+                              ? 'bg-red-400 shadow-[0_0_8px_rgba(239,68,68,0.8)]'
+                              : 'bg-white shadow-[0_0_8px_rgba(255,255,255,0.7)]'
+                          }`}
+                        />
+                      )}
+                    </div>
+                  )
+                })}
+              </motion.div>
+
+              {/* Numeric Keypad Grid 3x4 (Matching user uploaded keypad UI) */}
+              <div className="grid grid-cols-3 gap-y-3.5 gap-x-6 sm:gap-y-4 sm:gap-x-7 w-full max-w-[270px]">
+                {['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', 'delete'].map((key, i) => {
+                  if (key === '') {
+                    return <div key={`empty-${i}`} className="w-16 h-16" />
+                  }
+
+                  if (key === 'delete') {
+                    return (
+                      <button
+                        key="key-delete"
+                        onClick={() => handleKeyPadPress('backspace')}
+                        onMouseDown={() => setActiveKey('delete')}
+                        onMouseUp={() => setActiveKey(null)}
+                        onTouchStart={() => setActiveKey('delete')}
+                        onTouchEnd={() => setActiveKey(null)}
+                        className="relative w-16 h-16 mx-auto flex items-center justify-center rounded-full text-white/80 hover:text-white transition-all cursor-pointer"
+                        aria-label="Backspace"
+                      >
+                        {activeKey === 'delete' && (
+                          <span className="absolute w-12 h-12 rounded-full bg-white/10 pointer-events-none" />
+                        )}
+                        <Delete size={24} className="stroke-[1.6]" />
+                      </button>
+                    )
+                  }
+
+                  return (
+                    <button
+                      key={`key-${key}`}
+                      onClick={() => handleKeyPadPress(key)}
+                      onMouseDown={() => setActiveKey(key)}
+                      onMouseUp={() => setActiveKey(null)}
+                      onTouchStart={() => setActiveKey(key)}
+                      onTouchEnd={() => setActiveKey(null)}
+                      className="relative w-16 h-16 mx-auto flex items-center justify-center rounded-full text-white text-2xl sm:text-[28px] font-normal transition-all cursor-pointer"
+                    >
+                      {activeKey === key && (
+                        <span className="absolute w-12 h-12 rounded-full bg-white/12 pointer-events-none" />
+                      )}
+                      <span>{key}</span>
+                    </button>
+                  )
+                })}
+              </div>
+
+              {/* Feedback messages */}
+              {pinState === 'error' && (
+                <p className="mt-4 text-xs text-red-400 font-sans">
+                  Incorrect PIN. Please try again.
+                </p>
+              )}
+              {pinState === 'success' && (
+                <p className="mt-4 text-xs text-emerald-400 font-sans flex items-center gap-1.5">
+                  <Sparkles size={12} />
+                  <span>PIN Accepted! Starting Preview...</span>
+                </p>
+              )}
+            </motion.div>
+          </div>
+        )}
       </motion.div>
     </AnimatePresence>
   )
