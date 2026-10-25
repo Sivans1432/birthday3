@@ -118,19 +118,30 @@ const TimelineCard: React.FC<TimelineCardProps> = ({ item, index, isEven, icon }
             {item.description}
           </p>
 
-          {/* Optional attached milestone image */}
+          {/* Optional attached milestone image - Full Face & Body Display */}
           {item.image && (
-            <div className="mt-4 rounded-2xl overflow-hidden border border-amber-500/40 bg-black/80 shadow-2xl group/img relative">
+            <div className="mt-4 rounded-2xl overflow-hidden border border-amber-500/40 bg-[#0c0a08] shadow-2xl group/img relative h-[460px] sm:h-[520px] flex items-center justify-center">
+              {/* Romantic blurred ambient backdrop to fill widescreen frame */}
+              <img
+                src={item.image}
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-35 scale-110 pointer-events-none"
+                aria-hidden="true"
+              />
+              <div className="absolute inset-0 bg-black/30 pointer-events-none" />
+
+              {/* Main crisp uncropped photo displaying full face AND body */}
               <img
                 src={item.image}
                 alt={item.title}
-                style={{ objectPosition: item.objectPosition || 'center' }}
-                className="w-full h-72 sm:h-80 md:h-88 object-cover transition-transform duration-700 group-hover/img:scale-105"
+                className="relative z-10 w-full h-full object-contain p-1.5 transition-transform duration-700 group-hover/img:scale-[1.02]"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none'
                 }}
               />
-              <div className="absolute bottom-3 right-3 px-3.5 py-1 rounded-full bg-black/80 backdrop-blur-md border border-amber-400/40 text-[11px] font-cinzel text-amber-200 shadow-lg flex items-center gap-1.5">
+
+              {/* Milestone Badge */}
+              <div className="absolute bottom-3 right-3 z-20 px-3.5 py-1 rounded-full bg-black/85 backdrop-blur-md border border-amber-400/40 text-[11px] font-cinzel text-amber-200 shadow-lg flex items-center gap-1.5">
                 <span className="text-rose-400">♥</span>
                 <span>{item.imageBadge || 'Our Memory'}</span>
               </div>

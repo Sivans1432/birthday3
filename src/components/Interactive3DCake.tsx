@@ -202,6 +202,14 @@ export const Interactive3DCake: React.FC = () => {
     })
 
     candlePositions.forEach((pos, idx) => {
+      // Large hit box for clicking / tapping easily
+      const hitBoxGeo = new THREE.CylinderGeometry(0.9, 0.9, 3.0, 16)
+      const hitBoxMat = new THREE.MeshBasicMaterial({ visible: false })
+      const hitBox = new THREE.Mesh(hitBoxGeo, hitBoxMat)
+      hitBox.position.set(pos.x, 5.1, pos.z)
+      hitBox.userData = { candleIndex: idx }
+      cakeGroup.add(hitBox)
+
       // Candle Body
       const candle = new THREE.Mesh(candleGeo, candleMat)
       candle.position.set(pos.x, 4.65, pos.z)
@@ -214,13 +222,16 @@ export const Interactive3DCake: React.FC = () => {
       const wickMat = new THREE.MeshBasicMaterial({ color: 0x333333 })
       const wick = new THREE.Mesh(wickGeo, wickMat)
       wick.position.set(pos.x, 5.35, pos.z)
+      wick.userData = { candleIndex: idx }
       cakeGroup.add(wick)
 
       // Flame Group (dual layered for realistic glow)
       const flameGroup = new THREE.Group()
       flameGroup.position.set(pos.x, 5.4, pos.z)
+      flameGroup.userData = { candleIndex: idx }
 
       const flameOuter = new THREE.Mesh(flameGeo, flameMat)
+      flameOuter.userData = { candleIndex: idx }
       flameGroup.add(flameOuter)
 
       // Inner hotter core
@@ -232,6 +243,7 @@ export const Interactive3DCake: React.FC = () => {
       })
       const flameInner = new THREE.Mesh(flameGeo, innerFlameMat)
       flameInner.scale.set(0.5, 0.6, 0.5)
+      flameInner.userData = { candleIndex: idx }
       flameGroup.add(flameInner)
 
       cakeGroup.add(flameGroup)
@@ -259,43 +271,71 @@ export const Interactive3DCake: React.FC = () => {
     scene.add(smokeMesh)
     smokeParticlesRef.current = smokeMesh
 
-    // Raycasting for interactive clicking on candles/flames directly
+    // Raycasting for interactive clicking/tapping on candles/flames directly
     const raycaster = new THREE.Raycaster()
     const mouse = new THREE.Vector2()
 
-    const handleCanvasClick = (event: MouseEvent) => {
+    const checkCandleHit = (clientX: number, clientY: number): boolean => {
       const rect = renderer.domElement.getBoundingClientRect()
-      mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
-      mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
+      mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1
+      mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1
 
       raycaster.setFromCamera(mouse, camera)
       const intersects = raycaster.intersectObjects(cakeGroup.children, true)
 
       if (intersects.length > 0) {
-        // Find if candle or flame was hit
+        // Direct candle / flame / hitbox intersection
         for (const hit of intersects) {
           let curr: THREE.Object3D | null = hit.object
           while (curr && curr !== cakeGroup) {
             if (curr.userData && curr.userData.candleIndex !== undefined) {
-              const cIdx = curr.userData.candleIndex
-              extinguishSingleCandle(cIdx)
-              return
+              extinguishSingleCandle(curr.userData.candleIndex)
+              return true
             }
             curr = curr.parent
           }
         }
+
+        // Tap on top tier near candles (within top tier surface)
+        const topHit = intersects.find((h) => h.point.y > 3.6)
+        if (topHit) {
+          let closestIdx = -1
+          let minDist = Infinity
+          candlePositions.forEach((pos, idx) => {
+            const d = Math.hypot(topHit.point.x - pos.x, topHit.point.z - pos.z)
+            if (d < minDist) {
+              minDist = d
+              closestIdx = idx
+            }
+          })
+          if (closestIdx !== -1 && minDist < 2.5) {
+            extinguishSingleCandle(closestIdx)
+            return true
+          }
+        }
       }
+      return false
+    }
+
+    const handleCanvasClick = (event: MouseEvent) => {
+      checkCandleHit(event.clientX, event.clientY)
     }
 
     renderer.domElement.addEventListener('click', handleCanvasClick)
 
-    // Gentle drag rotation
+    // Gentle drag rotation + tap distinction
     let isDragging = false
     let prevMouseX = 0
+    let startX = 0
+    let startY = 0
+    let hasMoved = false
 
     const onMouseDown = (e: MouseEvent) => {
       isDragging = true
       prevMouseX = e.clientX
+      startX = e.clientX
+      startY = e.clientY
+      hasMoved = false
     }
 
     const onMouseMove = (e: MouseEvent) => {
@@ -303,10 +343,16 @@ export const Interactive3DCake: React.FC = () => {
       const deltaX = e.clientX - prevMouseX
       cakeGroupRef.current.rotation.y += deltaX * 0.008
       prevMouseX = e.clientX
+      if (Math.hypot(e.clientX - startX, e.clientY - startY) > 6) {
+        hasMoved = true
+      }
     }
 
-    const onMouseUp = () => {
+    const onMouseUp = (e: MouseEvent) => {
       isDragging = false
+      if (!hasMoved) {
+        checkCandleHit(e.clientX, e.clientY)
+      }
     }
 
     const dom = renderer.domElement
@@ -314,12 +360,19 @@ export const Interactive3DCake: React.FC = () => {
     window.addEventListener('mousemove', onMouseMove)
     window.addEventListener('mouseup', onMouseUp)
 
-    // Touch support for mobile phones & tablets
+    // Touch support for mobile phones & tablets with tap detection
     let prevTouchX = 0
+    let touchStartX = 0
+    let touchStartY = 0
+    let touchHasMoved = false
+
     const onTouchStart = (e: TouchEvent) => {
       if (e.touches.length === 1) {
         isDragging = true
         prevTouchX = e.touches[0].clientX
+        touchStartX = e.touches[0].clientX
+        touchStartY = e.touches[0].clientY
+        touchHasMoved = false
       }
     }
     const onTouchMove = (e: TouchEvent) => {
@@ -327,9 +380,15 @@ export const Interactive3DCake: React.FC = () => {
       const deltaX = e.touches[0].clientX - prevTouchX
       cakeGroupRef.current.rotation.y += deltaX * 0.008
       prevTouchX = e.touches[0].clientX
+      if (Math.hypot(e.touches[0].clientX - touchStartX, e.touches[0].clientY - touchStartY) > 8) {
+        touchHasMoved = true
+      }
     }
-    const onTouchEnd = () => {
+    const onTouchEnd = (e: TouchEvent) => {
       isDragging = false
+      if (!touchHasMoved && e.changedTouches && e.changedTouches.length > 0) {
+        checkCandleHit(e.changedTouches[0].clientX, e.changedTouches[0].clientY)
+      }
     }
 
     dom.addEventListener('touchstart', onTouchStart, { passive: true })
@@ -483,19 +542,19 @@ export const Interactive3DCake: React.FC = () => {
           </div>
 
           {/* Candle Status Badges */}
-          <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5">
+          <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
             {candlesLit.map((lit, i) => (
               <button
                 key={i}
                 onClick={() => extinguishSingleCandle(i)}
-                title={lit ? `Tap to blow candle ${i + 1}` : `Candle ${i + 1} extinguished`}
-                className={`p-1.5 rounded-full border transition-all cursor-pointer ${
+                title={lit ? `Tap to blow out candle ${i + 1}` : `Candle ${i + 1} extinguished`}
+                className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full border transition-all cursor-pointer flex items-center justify-center ${
                   lit
-                    ? 'border-amber-400/60 bg-amber-500/20 text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.5)]'
-                    : 'border-white/10 bg-black/40 text-white/30'
+                    ? 'border-amber-400/80 bg-amber-500/25 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.6)] animate-pulse'
+                    : 'border-white/10 bg-black/60 text-white/20'
                 }`}
               >
-                <Flame size={14} className={lit ? 'animate-pulse text-amber-400' : 'text-zinc-600'} />
+                <Flame size={18} className={lit ? 'text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.8)]' : 'text-zinc-600'} />
               </button>
             ))}
           </div>
