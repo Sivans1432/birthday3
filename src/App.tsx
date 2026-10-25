@@ -45,8 +45,8 @@ export const App: React.FC = () => {
             : 'opacity-0 pointer-events-none fixed inset-0 overflow-hidden'
         }`}
       >
-        {/* 3D WebGL Ambient Space (Floating sparkles, rose petals, rotating rings) */}
-        <BackgroundCanvas3D />
+        {/* 3D WebGL Ambient Space (Only runs when website is revealed, saving 100% GPU during countdown & video) */}
+        {isWebsiteRevealed && <BackgroundCanvas3D />}
 
         {/* Floating Luxury Navigation */}
         <Navbar onReplayIntro={handleReplay} />

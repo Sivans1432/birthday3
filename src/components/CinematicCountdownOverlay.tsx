@@ -58,6 +58,11 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
   const celebrationTriggeredRef = useRef<boolean>(false)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const videoRef = useRef<HTMLVideoElement | null>(null)
+  const stageRef = useRef<RevealStage>('COUNTDOWN')
+
+  useEffect(() => {
+    stageRef.current = stage
+  }, [stage])
 
   // 1. Lock body and html scroll when overlay is active
   useEffect(() => {
@@ -117,14 +122,17 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
       setStage('CELEBRATING')
       if (videoRef.current) {
         videoRef.current.currentTime = 0
-        videoRef.current.play().catch(() => {
-          // If browser policy blocks audio autoplay, play muted
-          if (videoRef.current) {
-            videoRef.current.muted = true
-            setIsVideoMuted(true)
-            videoRef.current.play().catch(() => {})
-          }
-        })
+        const playPromise = videoRef.current.play()
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            // If browser policy blocks audio autoplay, play muted smoothly
+            if (videoRef.current) {
+              videoRef.current.muted = true
+              setIsVideoMuted(true)
+              videoRef.current.play().catch(() => {})
+            }
+          })
+        }
       }
     }, 350)
 
@@ -210,7 +218,7 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
     }
 
     const particles: Particle[] = []
-    const particleCount = Math.min(width < 768 ? 40 : 80, 85)
+    const particleCount = width < 768 ? 30 : 50
     const goldColors = ['#ffd700', '#f6d167', '#d4af37', '#ffe89e', '#ffffff']
 
     for (let i = 0; i < particleCount; i++) {
@@ -219,19 +227,25 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
       particles.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        size: isPetal ? Math.random() * 8 + 6 : isStar ? Math.random() * 2.8 + 1.5 : Math.random() * 2 + 1,
-        speedY: isPetal ? Math.random() * 0.9 + 0.5 : -(Math.random() * 0.4 + 0.2),
-        speedX: Math.random() * 0.6 - 0.3,
+        size: isPetal ? Math.random() * 8 + 6 : isStar ? Math.random() * 2.5 + 1.2 : Math.random() * 1.8 + 1,
+        speedY: isPetal ? Math.random() * 0.9 + 0.5 : -(Math.random() * 0.35 + 0.15),
+        speedX: Math.random() * 0.5 - 0.25,
         opacity: Math.random() * 0.7 + 0.3,
         fadeSpeed: Math.random() * 0.015 + 0.005,
         color: isPetal ? '#e63946' : goldColors[Math.floor(Math.random() * goldColors.length)],
         type: isPetal ? 'petal' : isStar ? 'star' : 'sparkle',
         angle: Math.random() * Math.PI * 2,
-        rotationSpeed: (Math.random() - 0.5) * 0.03
+        rotationSpeed: (Math.random() - 0.5) * 0.025
       })
     }
 
     const render = () => {
+      // Pause canvas loop when celebrating (crackers video active) or tab hidden to free 100% GPU
+      if (document.hidden || stageRef.current === 'CELEBRATING') {
+        animationFrameId = requestAnimationFrame(render)
+        return
+      }
+
       ctx.clearRect(0, 0, width, height)
 
       for (let i = 0; i < particles.length; i++) {
@@ -267,11 +281,10 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
           ctx.bezierCurveTo(-p.size * 0.8, p.size * 0.8, -p.size * 0.8, -p.size * 0.8, 0, -p.size)
           ctx.fill()
         } else if (p.type === 'star') {
+          // Hardware-efficient star with crisp crosslines and inner glow (no heavy software shadowBlur)
           ctx.fillStyle = p.color
-          ctx.shadowBlur = 8
-          ctx.shadowColor = '#ffd700'
           ctx.beginPath()
-          ctx.arc(0, 0, p.size * 0.5, 0, Math.PI * 2)
+          ctx.arc(0, 0, p.size * 0.6, 0, Math.PI * 2)
           ctx.fill()
 
           ctx.strokeStyle = p.color
@@ -283,9 +296,13 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
           ctx.lineTo(0, p.size * 2)
           ctx.stroke()
         } else {
+          // Fast zero-blur glow circle (GPU & mobile friendly)
+          ctx.fillStyle = 'rgba(255, 215, 0, 0.25)'
+          ctx.beginPath()
+          ctx.arc(0, 0, p.size * 2, 0, Math.PI * 2)
+          ctx.fill()
+
           ctx.fillStyle = p.color
-          ctx.shadowBlur = 6
-          ctx.shadowColor = '#ffd700'
           ctx.beginPath()
           ctx.arc(0, 0, p.size, 0, Math.PI * 2)
           ctx.fill()
@@ -406,26 +423,30 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
         style={{ touchAction: 'manipulation' }}
       >
         {/* ============================================================== */}
-        {/* REAL CRACKERS BLAST VIDEO BACKGROUND                           */}
+        {/* REAL CRACKERS BLAST VIDEO (PRELOADED FOR INSTANT 0-LAG PLAYBACK)*/}
         {/* ============================================================== */}
-        {(stage === 'BURST' || stage === 'CELEBRATING' || stage === 'FADING_OUT') && (
-          <div className="absolute inset-0 z-10 w-full h-full overflow-hidden pointer-events-none">
-            <video
-              ref={videoRef}
-              src={videoSrc}
-              playsInline
-              autoPlay
-              muted={isVideoMuted}
-              className="w-full h-full object-cover transition-opacity duration-700"
-              onEnded={handleVideoEnded}
-              onError={() => setVideoLoadError(true)}
-            />
-            {/* Cinematic dark grading overlay to keep golden text brilliant and visible */}
-            <div className="absolute inset-0 bg-black/40 pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/60 pointer-events-none" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(0,0,0,0.6)_90%)] pointer-events-none" />
-          </div>
-        )}
+        <div
+          className={`absolute inset-0 z-10 w-full h-full overflow-hidden pointer-events-none transition-opacity duration-700 ${
+            stage === 'BURST' || stage === 'CELEBRATING' || stage === 'FADING_OUT'
+              ? 'opacity-100'
+              : 'opacity-0'
+          }`}
+        >
+          <video
+            ref={videoRef}
+            src={videoSrc}
+            preload="auto"
+            playsInline
+            muted={isVideoMuted}
+            className="w-full h-full object-cover will-change-transform"
+            onEnded={handleVideoEnded}
+            onError={() => setVideoLoadError(true)}
+          />
+          {/* Cinematic dark grading overlay to keep golden text brilliant and visible */}
+          <div className="absolute inset-0 bg-black/40 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/60 pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(0,0,0,0.6)_90%)] pointer-events-none" />
+        </div>
 
         {/* Background Canvas Particles (Stars & Petals) */}
         <canvas

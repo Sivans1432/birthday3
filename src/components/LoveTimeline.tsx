@@ -125,7 +125,9 @@ const TimelineCard: React.FC<TimelineCardProps> = ({ item, index, isEven, icon }
               <img
                 src={item.image}
                 alt=""
-                className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-35 scale-110 pointer-events-none"
+                loading="lazy"
+                decoding="async"
+                className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-35 scale-110 pointer-events-none transform-gpu"
                 aria-hidden="true"
               />
               <div className="absolute inset-0 bg-black/30 pointer-events-none" />
@@ -134,7 +136,9 @@ const TimelineCard: React.FC<TimelineCardProps> = ({ item, index, isEven, icon }
               <img
                 src={item.image}
                 alt={item.title}
-                className="relative z-10 w-full h-full object-contain p-1.5 transition-transform duration-700 group-hover/img:scale-[1.02]"
+                loading="lazy"
+                decoding="async"
+                className="relative z-10 w-full h-full object-contain p-1.5 transition-transform duration-700 group-hover/img:scale-[1.02] transform-gpu"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none'
                 }}

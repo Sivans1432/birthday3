@@ -18,13 +18,14 @@ export const BackgroundCanvas3D: React.FC = () => {
     )
     camera.position.z = 30
 
+    const isMobile = window.innerWidth < 768
     const renderer = new THREE.WebGLRenderer({
       alpha: true,
-      antialias: true,
+      antialias: !isMobile, // Disable expensive antialiasing on mobile GPU for locked 60fps
       powerPreference: 'high-performance'
     })
     renderer.setSize(window.innerWidth, window.innerHeight)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2))
     container.appendChild(renderer.domElement)
 
     // Ambient & Directional Lights
@@ -36,7 +37,7 @@ export const BackgroundCanvas3D: React.FC = () => {
     scene.add(pointLight)
 
     // 1. Golden Dust / Sparkles Particle System
-    const particleCount = window.innerWidth < 768 ? 90 : 180
+    const particleCount = isMobile ? 45 : 110
     const particleGeo = new THREE.BufferGeometry()
     const positions = new Float32Array(particleCount * 3)
     const scales = new Float32Array(particleCount)
@@ -82,7 +83,7 @@ export const BackgroundCanvas3D: React.FC = () => {
     scene.add(particles)
 
     // 2. Floating 3D Rose Petals
-    const petalCount = window.innerWidth < 768 ? 16 : 30
+    const petalCount = isMobile ? 8 : 20
     const petalGroup = new THREE.Group()
 
     // Curved petal geometry
@@ -164,7 +165,7 @@ export const BackgroundCanvas3D: React.FC = () => {
       mouseY = (e.clientY / window.innerHeight - 0.5) * 2
     }
 
-    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mousemove', handleMouseMove, { passive: true })
 
     // Resize Handler
     const handleResize = () => {
@@ -173,7 +174,7 @@ export const BackgroundCanvas3D: React.FC = () => {
       renderer.setSize(window.innerWidth, window.innerHeight)
     }
 
-    window.addEventListener('resize', handleResize)
+    window.addEventListener('resize', handleResize, { passive: true })
 
     // Animation Loop
     let animationFrameId: number
@@ -181,6 +182,10 @@ export const BackgroundCanvas3D: React.FC = () => {
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate)
+
+      // Skip rendering if browser tab is hidden to save battery & GPU
+      if (document.hidden) return
+
       const elapsedTime = clock.getElapsedTime()
 
       // Smooth mouse parallax
@@ -228,6 +233,13 @@ export const BackgroundCanvas3D: React.FC = () => {
       window.removeEventListener('mousemove', handleMouseMove)
       window.removeEventListener('resize', handleResize)
       cancelAnimationFrame(animationFrameId)
+      particleGeo.dispose()
+      particleMat.dispose()
+      particleTexture.dispose()
+      petalGeo.dispose()
+      petalMat.dispose()
+      ringGeo.dispose()
+      ringMat.dispose()
       renderer.dispose()
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement)

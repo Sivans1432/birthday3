@@ -185,16 +185,25 @@ interface GalleryCardProps {
 const GalleryCard: React.FC<GalleryCardProps> = ({ photo, index, onOpen }) => {
   const [rotateX, setRotateX] = useState(0)
   const [rotateY, setRotateY] = useState(0)
+  const animFrameRef = React.useRef<number | null>(null)
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Only apply 3D tilt on desktop devices to preserve mobile 60fps scrolling
+    if (window.innerWidth < 1024) return
+
     const rect = e.currentTarget.getBoundingClientRect()
     const x = e.clientX - rect.left - rect.width / 2
     const y = e.clientY - rect.top - rect.height / 2
-    setRotateX(-y / 15)
-    setRotateY(x / 15)
+
+    if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current)
+    animFrameRef.current = requestAnimationFrame(() => {
+      setRotateX(-y / 18)
+      setRotateY(x / 18)
+    })
   }
 
   const handleMouseLeave = () => {
+    if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current)
     setRotateX(0)
     setRotateY(0)
   }
@@ -204,15 +213,15 @@ const GalleryCard: React.FC<GalleryCardProps> = ({ photo, index, onOpen }) => {
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
+      transition={{ duration: 0.6, delay: index * 0.08 }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={onOpen}
       style={{
         transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
-        transition: 'transform 0.15s ease-out'
+        transition: 'transform 0.2s ease-out'
       }}
-      className="group relative cursor-pointer rounded-2xl p-3 bg-gradient-to-b from-[#18130e]/90 via-[#0f0c09] to-[#080605] border border-amber-500/25 hover:border-amber-400/60 shadow-[0_15px_35px_-10px_rgba(0,0,0,0.8),0_0_20px_rgba(212,175,55,0.08)] hover:shadow-[0_20px_45px_-5px_rgba(0,0,0,0.9),0_0_30px_rgba(212,175,55,0.22)] transition-all overflow-hidden flex flex-col"
+      className="group relative cursor-pointer rounded-2xl p-3 bg-gradient-to-b from-[#18130e]/90 via-[#0f0c09] to-[#080605] border border-amber-500/25 hover:border-amber-400/60 shadow-[0_15px_35px_-10px_rgba(0,0,0,0.8),0_0_20px_rgba(212,175,55,0.08)] hover:shadow-[0_20px_45px_-5px_rgba(0,0,0,0.9),0_0_30px_rgba(212,175,55,0.22)] transition-all overflow-hidden flex flex-col will-change-transform"
     >
       {/* Gold metallic corner accents */}
       <span className="absolute top-2 left-2 text-[10px] text-amber-400/40 select-none">✦</span>
@@ -224,6 +233,7 @@ const GalleryCard: React.FC<GalleryCardProps> = ({ photo, index, onOpen }) => {
           src={photo.src}
           alt={photo.title}
           loading="lazy"
+          decoding="async"
           style={{ objectPosition: photo.objectPosition || 'center' }}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
           onError={(e) => {

@@ -34,13 +34,14 @@ export const Interactive3DCake: React.FC = () => {
     camera.position.set(0, 5, initialCamZ)
     camera.lookAt(0, 1.5, 0)
 
+    const isMobile = window.innerWidth < 640
     const renderer = new THREE.WebGLRenderer({
       alpha: true,
-      antialias: true,
+      antialias: !isMobile, // Disable expensive antialias on mobile for smooth 60fps
       powerPreference: 'high-performance'
     })
     renderer.setSize(width, height)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2))
     renderer.shadowMap.enabled = true
     renderer.shadowMap.type = THREE.PCFSoftShadowMap
     container.appendChild(renderer.domElement)
@@ -409,12 +410,26 @@ export const Interactive3DCake: React.FC = () => {
 
     window.addEventListener('resize', handleResize)
 
+    // Visibility observer to pause 3D loop when off-screen (saves 100% GPU during scrolling)
+    let isVisible = false
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting
+      },
+      { threshold: 0.05, rootMargin: '250px' }
+    )
+    observer.observe(container)
+
     // Render loop
     let animId: number
     let clock = new THREE.Clock()
 
     const animate = () => {
       animId = requestAnimationFrame(animate)
+
+      // Skip render if off-screen or tab hidden (zero lag for the rest of the site)
+      if (!isVisible || document.hidden) return
+
       const time = clock.getElapsedTime()
 
       // Auto rotation when not dragging
@@ -446,6 +461,7 @@ export const Interactive3DCake: React.FC = () => {
     animate()
 
     return () => {
+      observer.disconnect()
       window.removeEventListener('resize', handleResize)
       dom.removeEventListener('click', handleCanvasClick)
       dom.removeEventListener('mousedown', onMouseDown)
