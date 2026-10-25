@@ -81,10 +81,10 @@ export const PhotoGallery: React.FC = () => {
             {/* Close Button */}
             <button
               onClick={() => setSelectedPhotoIndex(null)}
-              className="absolute top-6 right-6 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer border border-white/20"
+              className="absolute top-3 right-3 sm:top-6 sm:right-6 z-50 p-2 sm:p-3 rounded-full bg-black/70 sm:bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer border border-white/20"
               title="Close (Esc)"
             >
-              <X size={24} />
+              <X size={20} className="sm:w-6 sm:h-6" />
             </button>
 
             {/* Navigation Arrows */}
@@ -95,10 +95,10 @@ export const PhotoGallery: React.FC = () => {
                   prev !== null ? (prev - 1 + photos.length) % photos.length : null
                 )
               }}
-              className="absolute left-4 sm:left-8 z-50 p-3 rounded-full bg-black/60 hover:bg-amber-500/30 text-amber-200 border border-amber-400/30 transition-all cursor-pointer"
+              className="absolute left-2 sm:left-8 z-50 p-2 sm:p-3 rounded-full bg-black/70 hover:bg-amber-500/30 text-amber-200 border border-amber-400/30 transition-all cursor-pointer"
               title="Previous photo"
             >
-              <ChevronLeft size={28} />
+              <ChevronLeft size={22} className="sm:w-7 sm:h-7" />
             </button>
 
             <button
@@ -108,10 +108,10 @@ export const PhotoGallery: React.FC = () => {
                   prev !== null ? (prev + 1) % photos.length : null
                 )
               }}
-              className="absolute right-4 sm:right-8 z-50 p-3 rounded-full bg-black/60 hover:bg-amber-500/30 text-amber-200 border border-amber-400/30 transition-all cursor-pointer"
+              className="absolute right-2 sm:right-8 z-50 p-2 sm:p-3 rounded-full bg-black/70 hover:bg-amber-500/30 text-amber-200 border border-amber-400/30 transition-all cursor-pointer"
               title="Next photo"
             >
-              <ChevronRight size={28} />
+              <ChevronRight size={22} className="sm:w-7 sm:h-7" />
             </button>
 
             {/* Lightbox Content Container */}
@@ -120,7 +120,7 @@ export const PhotoGallery: React.FC = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="relative max-w-5xl max-h-[90vh] flex flex-col items-center bg-[#0d0a08]/90 border border-amber-500/40 rounded-3xl overflow-hidden shadow-[0_0_80px_rgba(212,175,55,0.25)]"
+              className="relative max-w-5xl max-h-[92vh] w-full flex flex-col items-center bg-[#0d0a08]/95 border border-amber-500/40 rounded-2xl sm:rounded-3xl overflow-y-auto shadow-[0_0_80px_rgba(212,175,55,0.25)]"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Image Frame */}

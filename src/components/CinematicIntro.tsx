@@ -147,21 +147,21 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onEnterSurprise 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.4, delay: 1 }}
-          className="space-y-4 mb-8"
+          className="space-y-3 sm:space-y-4 mb-6 sm:mb-8 w-full px-2"
         >
-          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-cinzel font-extrabold tracking-tight leading-none text-gold-bright drop-shadow-2xl">
+          <h1 className="text-3xl xs:text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-cinzel font-extrabold tracking-tight leading-tight sm:leading-none text-gold-bright drop-shadow-2xl">
             Happy Birthday,
           </h1>
           <div className="flex flex-col items-center justify-center">
-            <h2 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-serif text-white/95 font-semibold tracking-wide">
+            <h2 className="text-2xl xs:text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-serif text-white/95 font-semibold tracking-wide">
               {BIRTHDAY_CONFIG.girlfriendName}
             </h2>
-            <div className="flex items-center gap-3 mt-2">
-              <span className="h-[1px] w-12 bg-gradient-to-r from-transparent to-amber-400/60" />
-              <p className="font-script text-3xl sm:text-4xl md:text-5xl text-rose-400 drop-shadow-[0_0_12px_rgba(251,113,133,0.5)]">
+            <div className="flex items-center gap-2 sm:gap-3 mt-1 sm:mt-2">
+              <span className="h-[1px] w-8 sm:w-12 bg-gradient-to-r from-transparent to-amber-400/60" />
+              <p className="font-script text-2xl xs:text-3xl sm:text-4xl md:text-5xl text-rose-400 drop-shadow-[0_0_12px_rgba(251,113,133,0.5)]">
                 My {BIRTHDAY_CONFIG.nickname} ❤️
               </p>
-              <span className="h-[1px] w-12 bg-gradient-to-l from-transparent to-amber-400/60" />
+              <span className="h-[1px] w-8 sm:w-12 bg-gradient-to-l from-transparent to-amber-400/60" />
             </div>
           </div>
         </motion.div>
@@ -171,7 +171,7 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onEnterSurprise 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.2, delay: 1.4 }}
-          className="max-w-2xl text-base sm:text-lg text-amber-100/75 leading-relaxed font-sans mb-10 px-4"
+          className="max-w-2xl text-sm sm:text-base md:text-lg text-amber-100/75 leading-relaxed font-sans mb-8 sm:mb-10 px-4"
         >
           Distance may keep us apart today, but every beat of my heart belongs to you.
           Step inside your little universe, made with all my love, just for you, Maa.
@@ -182,32 +182,32 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onEnterSurprise 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, delay: 1.6 }}
-          className="w-full max-w-lg mb-10"
+          className="w-full max-w-lg mb-8 sm:mb-10 px-2 sm:px-0"
         >
           {isCelebration ? (
-            <div className="p-6 rounded-2xl gold-card border border-amber-500/40 relative overflow-hidden group">
+            <div className="p-5 sm:p-6 rounded-2xl gold-card border border-amber-500/40 relative overflow-hidden group">
               <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 via-rose-500/10 to-amber-500/10 animate-shimmer" />
               <div className="relative z-10 flex flex-col items-center">
-                <div className="flex items-center gap-2 text-amber-300 font-cinzel text-sm uppercase tracking-widest mb-1">
+                <div className="flex items-center gap-2 text-amber-300 font-cinzel text-xs sm:text-sm uppercase tracking-widest mb-1">
                   <Sparkles size={16} className="text-amber-400" />
                   <span>The Grand Day Is Here!</span>
                   <Sparkles size={16} className="text-amber-400" />
                 </div>
-                <p className="text-2xl md:text-3xl font-serif text-white font-bold mb-2">
+                <p className="text-xl sm:text-2xl md:text-3xl font-serif text-white font-bold mb-2">
                   Today Is Ammuuu’s Birthday! 🎂
                 </p>
-                <p className="text-sm text-amber-200/80">
+                <p className="text-xs sm:text-sm text-amber-200/80">
                   Ready to celebrate the most precious girl in the universe?
                 </p>
               </div>
             </div>
           ) : (
-            <div className="p-6 rounded-2xl gold-card border border-amber-500/30">
+            <div className="p-4 sm:p-6 rounded-2xl gold-card border border-amber-500/30">
               <div className="flex items-center justify-center gap-2 text-xs font-cinzel tracking-widest text-amber-300/80 uppercase mb-4">
                 <Clock size={14} />
                 <span>Counting Down To October 27</span>
               </div>
-              <div className="grid grid-cols-4 gap-3 text-center">
+              <div className="grid grid-cols-4 gap-2 sm:gap-3 text-center">
                 {[
                   { label: 'Days', val: timeRemaining.days },
                   { label: 'Hours', val: timeRemaining.hours },
@@ -216,12 +216,12 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onEnterSurprise 
                 ].map((item, idx) => (
                   <div
                     key={idx}
-                    className="p-3 rounded-xl bg-black/50 border border-amber-400/20 backdrop-blur-sm"
+                    className="p-2 sm:p-3 rounded-xl bg-black/50 border border-amber-400/20 backdrop-blur-sm"
                   >
-                    <div className="text-2xl md:text-3xl font-cinzel font-bold text-amber-200">
+                    <div className="text-xl sm:text-2xl md:text-3xl font-cinzel font-bold text-amber-200">
                       {String(item.val).padStart(2, '0')}
                     </div>
-                    <div className="text-[10px] uppercase tracking-wider text-amber-400/70 mt-1">
+                    <div className="text-[9px] sm:text-[10px] uppercase tracking-wider text-amber-400/70 mt-1">
                       {item.label}
                     </div>
                   </div>
@@ -236,11 +236,11 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onEnterSurprise 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, delay: 1.8 }}
-          className="flex flex-col sm:flex-row items-center gap-4"
+          className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto px-4"
         >
           <button
             onClick={handleOpenSurprise}
-            className="group relative px-9 py-4 rounded-full bg-gold-btn text-amber-950 font-cinzel font-bold text-lg tracking-wider uppercase shadow-[0_0_35px_rgba(212,175,55,0.45)] hover:shadow-[0_0_55px_rgba(212,175,55,0.7)] transition-all transform flex items-center gap-3 cursor-pointer"
+            className="group relative w-full sm:w-auto px-7 sm:px-9 py-3.5 sm:py-4 rounded-full bg-gold-btn text-amber-950 font-cinzel font-bold text-base sm:text-lg tracking-wider uppercase shadow-[0_0_35px_rgba(212,175,55,0.45)] hover:shadow-[0_0_55px_rgba(212,175,55,0.7)] transition-all transform flex items-center justify-center gap-3 cursor-pointer"
           >
             <span>Open Your Surprise</span>
             <Heart className="w-5 h-5 text-red-600 fill-red-600 group-hover:scale-125 transition-transform" />

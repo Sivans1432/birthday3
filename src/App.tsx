@@ -31,7 +31,7 @@ export const App: React.FC = () => {
   }
 
   return (
-    <div className="relative min-h-screen bg-[#050403]">
+    <div className="relative min-h-screen bg-[#050403] w-full overflow-x-hidden">
       {/* 1. First Screen: Full-Screen Cinematic Countdown Overlay */}
       {showCountdownOverlay && (
         <CinematicCountdownOverlay onRevealComplete={handleRevealComplete} />
@@ -39,7 +39,7 @@ export const App: React.FC = () => {
 
       {/* 2. Existing Birthday Website (Gated behind countdown reveal, zero flash) */}
       <div
-        className={`relative min-h-screen bg-[#060504] text-[#f7eed7] selection:bg-amber-500/30 selection:text-amber-200 transition-opacity duration-1000 ${
+        className={`relative min-h-screen bg-[#060504] text-[#f7eed7] selection:bg-amber-500/30 selection:text-amber-200 transition-opacity duration-1000 w-full overflow-x-hidden ${
           isWebsiteRevealed
             ? 'opacity-100 pointer-events-auto'
             : 'opacity-0 pointer-events-none fixed inset-0 overflow-hidden'

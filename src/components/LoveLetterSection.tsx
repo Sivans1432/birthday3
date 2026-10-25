@@ -23,7 +23,7 @@ export const LoveLetterSection: React.FC = () => {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-rose-500/10 rounded-full blur-[140px] pointer-events-none" />
 
       {/* Header */}
-      <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
+      <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-14 space-y-3 px-2">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-500/30 bg-amber-950/20 backdrop-blur-md">
           <Mail size={14} className="text-amber-400" />
           <span className="font-cinzel text-xs uppercase tracking-[0.25em] text-amber-200">
@@ -31,18 +31,18 @@ export const LoveLetterSection: React.FC = () => {
           </span>
         </div>
 
-        <h2 className="text-3xl sm:text-5xl md:text-6xl font-cinzel font-bold text-gold-bright tracking-tight">
+        <h2 className="text-2xl xs:text-3xl sm:text-5xl md:text-6xl font-cinzel font-bold text-gold-bright tracking-tight">
           A Letter For Ammu ❤️
         </h2>
 
-        <p className="text-amber-100/75 text-sm sm:text-base font-serif italic max-w-lg mx-auto">
+        <p className="text-amber-100/75 text-xs sm:text-base font-serif italic max-w-lg mx-auto">
           Words that come straight from the deepest chambers of my heart,
           across every mile between us.
         </p>
       </div>
 
       {/* 3D Envelope Presentation */}
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center w-full px-2 sm:px-0">
         {!isOpen && (
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
@@ -53,10 +53,10 @@ export const LoveLetterSection: React.FC = () => {
             className="group relative w-full max-w-lg cursor-pointer select-none"
           >
             {/* Outer envelope body */}
-            <div className="relative h-64 sm:h-72 rounded-3xl p-6 bg-gradient-to-b from-[#1b140e] via-[#100d0a] to-[#080605] border border-amber-500/40 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),0_0_40px_rgba(212,175,55,0.15)] flex flex-col items-center justify-center text-center overflow-hidden transition-all group-hover:border-amber-400/80 group-hover:shadow-[0_25px_70px_-10px_rgba(0,0,0,0.95),0_0_50px_rgba(212,175,55,0.3)]">
+            <div className="relative h-60 sm:h-72 rounded-3xl p-5 sm:p-6 bg-gradient-to-b from-[#1b140e] via-[#100d0a] to-[#080605] border border-amber-500/40 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),0_0_40px_rgba(212,175,55,0.15)] flex flex-col items-center justify-center text-center overflow-hidden transition-all group-hover:border-amber-400/80 group-hover:shadow-[0_25px_70px_-10px_rgba(0,0,0,0.95),0_0_50px_rgba(212,175,55,0.3)]">
               {/* Envelope Triangular Flap Graphic */}
               <div
-                className="absolute top-0 inset-x-0 h-36 bg-gradient-to-b from-[#251b12] to-[#16110c] border-b border-amber-500/30"
+                className="absolute top-0 inset-x-0 h-32 sm:h-36 bg-gradient-to-b from-[#251b12] to-[#16110c] border-b border-amber-500/30"
                 style={{
                   clipPath: 'polygon(0 0, 100% 0, 50% 100%)'
                 }}
@@ -65,9 +65,9 @@ export const LoveLetterSection: React.FC = () => {
               {/* Glowing Golden Wax Seal */}
               <motion.div
                 whileHover={{ scale: 1.15, rotate: 10 }}
-                className="relative z-20 w-16 h-16 rounded-full bg-gradient-to-br from-[#ffd54f] via-[#d4af37] to-[#8d620e] flex items-center justify-center border-2 border-[#fff3b0] shadow-[0_0_25px_rgba(212,175,55,0.6)] cursor-pointer"
+                className="relative z-20 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-[#ffd54f] via-[#d4af37] to-[#8d620e] flex items-center justify-center border-2 border-[#fff3b0] shadow-[0_0_25px_rgba(212,175,55,0.6)] cursor-pointer"
               >
-                <span className="font-cinzel font-bold text-amber-950 text-xl tracking-tighter">
+                <span className="font-cinzel font-bold text-amber-950 text-lg sm:text-xl tracking-tighter">
                   M
                 </span>
                 <Heart
@@ -77,11 +77,11 @@ export const LoveLetterSection: React.FC = () => {
               </motion.div>
 
               {/* Invitation prompt */}
-              <div className="relative z-10 mt-6 space-y-1">
-                <p className="font-cinzel text-sm sm:text-base font-semibold text-amber-200 tracking-wider">
+              <div className="relative z-10 mt-5 sm:mt-6 space-y-1">
+                <p className="font-cinzel text-xs sm:text-base font-semibold text-amber-200 tracking-wider">
                   Tap To Break Seal & Unfold
                 </p>
-                <p className="font-script text-2xl text-rose-400">
+                <p className="font-script text-xl sm:text-2xl text-rose-400">
                   With all my love, forever
                 </p>
               </div>
@@ -111,7 +111,7 @@ export const LoveLetterSection: React.FC = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20, scale: 0.96 }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
-              className="w-full max-w-3xl rounded-3xl p-6 sm:p-10 md:p-14 bg-gradient-to-b from-[#16120d] via-[#100d0a] to-[#090705] border-2 border-amber-500/40 shadow-[0_30px_90px_-20px_rgba(0,0,0,0.95),0_0_60px_rgba(212,175,55,0.2)] backdrop-blur-2xl relative overflow-hidden"
+              className="w-full max-w-3xl rounded-3xl p-5 sm:p-10 md:p-14 bg-gradient-to-b from-[#16120d] via-[#100d0a] to-[#090705] border-2 border-amber-500/40 shadow-[0_30px_90px_-20px_rgba(0,0,0,0.95),0_0_60px_rgba(212,175,55,0.2)] backdrop-blur-2xl relative overflow-hidden"
             >
               {/* Clearly Visible B&W Holding Hands Photo Background */}
               <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden select-none">

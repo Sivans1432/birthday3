@@ -439,21 +439,21 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
         <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-black/90 to-transparent pointer-events-none z-0" />
 
         {/* Top Controls: Music & Video Mute Toggle */}
-        <div className="absolute top-6 right-6 z-30 flex items-center gap-3">
+        <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-30 flex items-center gap-2 sm:gap-3">
           {/* Video Audio Unmute button when video is active */}
           {(stage === 'CELEBRATING' || stage === 'BURST') && (
             <button
               onClick={toggleVideoMute}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-full border backdrop-blur-md transition-all cursor-pointer shadow-lg ${
+              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-full border backdrop-blur-md transition-all cursor-pointer shadow-lg text-xs ${
                 isVideoMuted
                   ? 'border-red-500/60 bg-red-950/40 text-red-200'
                   : 'border-amber-400/80 bg-amber-500/30 text-amber-200'
               }`}
               title={isVideoMuted ? 'Unmute crackers video sound' : 'Mute crackers video sound'}
             >
-              {isVideoMuted ? <VolumeX size={15} /> : <Volume2 size={15} />}
-              <span className="text-xs font-cinzel tracking-wider uppercase">
-                {isVideoMuted ? 'Unmute Crackers' : 'Crackers Sound On'}
+              {isVideoMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
+              <span className="font-cinzel tracking-wider uppercase text-[11px] sm:text-xs">
+                {isVideoMuted ? 'Unmute' : 'Sound On'}
               </span>
             </button>
           )}
@@ -461,7 +461,7 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
           {/* Music Toggle */}
           <button
             onClick={toggleMusic}
-            className={`flex items-center gap-2.5 px-4 py-2 rounded-full border backdrop-blur-md transition-all cursor-pointer shadow-lg ${
+            className={`flex items-center gap-1.5 sm:gap-2.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border backdrop-blur-md transition-all cursor-pointer shadow-lg text-xs ${
               isPlayingMusic
                 ? 'border-amber-400/70 bg-amber-500/20 text-amber-200 shadow-[0_0_20px_rgba(212,175,55,0.4)]'
                 : 'border-amber-500/30 bg-black/60 text-amber-200/80 hover:border-amber-400/60'
@@ -471,19 +471,19 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
             {isPlayingMusic ? (
               <>
                 <div className="flex items-end gap-1 h-3.5">
-                  <span className="w-1 bg-amber-400 rounded-full animate-bounce [animation-delay:0.1s] h-3" />
-                  <span className="w-1 bg-amber-400 rounded-full animate-bounce [animation-delay:0.3s] h-4" />
-                  <span className="w-1 bg-amber-400 rounded-full animate-bounce [animation-delay:0.2s] h-2.5" />
+                  <span className="w-0.5 sm:w-1 bg-amber-400 rounded-full animate-bounce [animation-delay:0.1s] h-3" />
+                  <span className="w-0.5 sm:w-1 bg-amber-400 rounded-full animate-bounce [animation-delay:0.3s] h-4" />
+                  <span className="w-0.5 sm:w-1 bg-amber-400 rounded-full animate-bounce [animation-delay:0.2s] h-2.5" />
                 </div>
-                <span className="text-xs font-cinzel tracking-widest uppercase text-amber-300">
+                <span className="text-[11px] sm:text-xs font-cinzel tracking-widest uppercase text-amber-300">
                   Playing
                 </span>
               </>
             ) : (
               <>
-                <Music size={15} className="text-amber-400 animate-pulse" />
-                <span className="text-xs font-cinzel tracking-widest uppercase">
-                  Play Music 🎵
+                <Music size={14} className="text-amber-400 animate-pulse" />
+                <span className="text-[11px] sm:text-xs font-cinzel tracking-widest uppercase">
+                  Music 🎵
                 </span>
               </>
             )}
@@ -501,18 +501,18 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
         {/* STAGE 1: FULL-SCREEN COUNTDOWN ONLY                            */}
         {/* ============================================================== */}
         {stage === 'COUNTDOWN' && (
-          <div className="relative z-10 max-w-4xl w-full px-6 flex flex-col items-center text-center animate-fade-in">
+          <div className="relative z-10 max-w-4xl w-full px-4 sm:px-6 flex flex-col items-center text-center animate-fade-in">
             {/* Top Royal Crown / Heart Badge (Clicking opens secret PIN modal) */}
             <button
               onClick={() => setShowPinModal(true)}
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-amber-500/40 bg-amber-950/30 backdrop-blur-md mb-8 shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:border-amber-400/80 transition-all cursor-pointer"
+              className="inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-5 py-1.5 sm:py-2 rounded-full border border-amber-500/40 bg-amber-950/30 backdrop-blur-md mb-6 sm:mb-8 shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:border-amber-400/80 transition-all cursor-pointer"
               title="Click to enter PIN: 4410"
             >
-              <Crown className="w-4 h-4 text-amber-400 animate-pulse" />
-              <span className="font-cinzel text-xs uppercase tracking-[0.25em] text-amber-200 font-semibold">
+              <Crown className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-amber-400 animate-pulse" />
+              <span className="font-cinzel text-[11px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-amber-200 font-semibold">
                 FOR MY AMMUUU 👑
               </span>
-              <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500 animate-pulse" />
+              <Heart className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-rose-500 fill-rose-500 animate-pulse" />
             </button>
 
             {/* Opening Teaser Text */}
@@ -520,7 +520,7 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2, delay: 0.3 }}
-              className="font-serif italic text-2xl sm:text-3xl md:text-4xl text-amber-100 tracking-wide mb-10 drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]"
+              className="font-serif italic text-lg sm:text-2xl md:text-4xl text-amber-100 tracking-wide mb-8 sm:mb-10 drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] px-2"
             >
               Something Special Is Waiting For You ❤️
             </motion.h2>
@@ -530,9 +530,9 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
               initial={{ opacity: 0, scale: 0.94 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1.2, delay: 0.5 }}
-              className="w-full max-w-3xl mb-12"
+              className="w-full max-w-3xl mb-8 sm:mb-12"
             >
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-amber-950/20 via-black/60 to-black/80 border border-amber-500/35 shadow-[0_0_50px_rgba(212,175,55,0.15)] backdrop-blur-xl">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-amber-950/20 via-black/60 to-black/80 border border-amber-500/35 shadow-[0_0_50px_rgba(212,175,55,0.15)] backdrop-blur-xl">
                 {[
                   { label: 'DAYS', value: timeLeft.days },
                   { label: 'HOURS', value: timeLeft.hours },
@@ -541,24 +541,24 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
                 ].map((item, idx) => (
                   <div
                     key={idx}
-                    className="relative group p-4 sm:p-6 rounded-2xl bg-black/60 border border-amber-500/25 shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] flex flex-col items-center justify-center overflow-hidden"
+                    className="relative group p-3 sm:p-6 rounded-xl sm:rounded-2xl bg-black/60 border border-amber-500/25 shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] flex flex-col items-center justify-center overflow-hidden"
                   >
                     {/* Golden top highlight bar */}
                     <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-amber-400 to-transparent opacity-80" />
 
                     {/* Numeric Digits */}
-                    <div className="text-4xl sm:text-6xl md:text-7xl font-cinzel font-bold text-3d-gold tracking-tight py-1">
+                    <div className="text-3xl sm:text-6xl md:text-7xl font-cinzel font-bold text-3d-gold tracking-tight py-1">
                       {String(item.value).padStart(2, '0')}
                     </div>
 
                     {/* Label */}
-                    <div className="mt-2 text-xs sm:text-sm font-cinzel font-semibold tracking-[0.25em] text-amber-300/80 uppercase">
+                    <div className="mt-1 sm:mt-2 text-[10px] sm:text-sm font-cinzel font-semibold tracking-[0.2em] sm:tracking-[0.25em] text-amber-300/80 uppercase">
                       {item.label}
                     </div>
 
                     {/* Subtle corner sparkles */}
-                    <div className="absolute bottom-2 right-2 opacity-20 group-hover:opacity-60 transition-opacity">
-                      <Sparkles size={12} className="text-amber-400" />
+                    <div className="absolute bottom-1.5 right-1.5 sm:bottom-2 sm:right-2 opacity-20 group-hover:opacity-60 transition-opacity">
+                      <Sparkles size={11} className="text-amber-400" />
                     </div>
                   </div>
                 ))}
@@ -570,7 +570,7 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1, delay: 0.8 }}
-              className="text-xs sm:text-sm font-cinzel tracking-[0.2em] text-amber-400/60 uppercase"
+              className="text-[11px] sm:text-sm font-cinzel tracking-[0.18em] sm:tracking-[0.2em] text-amber-400/60 uppercase"
             >
               Target: October 27, 2026 · 12:00:00 AM IST
             </motion.p>
@@ -581,7 +581,7 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
         {/* STAGE 2 & 3: GRAND CELEBRATION REVEAL (Over Real Crackers Video)*/}
         {/* ============================================================== */}
         {(stage === 'CELEBRATING' || stage === 'FADING_OUT') && (
-          <div className="relative z-20 max-w-5xl w-full px-6 flex flex-col items-center text-center">
+          <div className="relative z-20 max-w-5xl w-full px-4 sm:px-6 flex flex-col items-center text-center">
             {/* Crown Icon with Golden Rays */}
             <motion.div
               initial={{ scale: 0, rotate: -25, opacity: 0 }}
@@ -590,10 +590,10 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
                 scale: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
                 opacity: { duration: 0.6 }
               }}
-              className="mb-4"
+              className="mb-3 sm:mb-4"
             >
-              <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-amber-400/60 bg-gradient-to-tr from-amber-950/80 via-red-950/60 to-black/80 flex items-center justify-center shadow-[0_0_50px_rgba(212,175,55,0.7)] backdrop-blur-md">
-                <Crown className="w-10 h-10 sm:w-12 sm:h-12 text-amber-300 drop-shadow-[0_0_15px_rgba(246,209,103,0.9)]" />
+              <div className="relative w-16 h-16 sm:w-24 sm:h-24 rounded-full border border-amber-400/60 bg-gradient-to-tr from-amber-950/80 via-red-950/60 to-black/80 flex items-center justify-center shadow-[0_0_50px_rgba(212,175,55,0.7)] backdrop-blur-md">
+                <Crown className="w-8 h-8 sm:w-12 sm:h-12 text-amber-300 drop-shadow-[0_0_15px_rgba(246,209,103,0.9)]" />
               </div>
             </motion.div>
 
@@ -602,7 +602,7 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
               initial={{ scale: 0.6, opacity: 0, y: 30 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-              className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-cinzel font-extrabold tracking-tight text-3d-gold leading-none drop-shadow-[0_0_45px_rgba(212,175,55,0.95)] mb-4"
+              className="text-3xl xs:text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-cinzel font-extrabold tracking-tight text-3d-gold leading-tight sm:leading-none drop-shadow-[0_0_45px_rgba(212,175,55,0.95)] mb-2 sm:mb-4"
             >
               HAPPY BIRTHDAY
             </motion.h1>
@@ -612,12 +612,12 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
               initial={{ scale: 0.7, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               transition={{ duration: 1.2, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="flex items-center justify-center gap-3 sm:gap-4 mb-6"
+              className="flex items-center justify-center gap-2 sm:gap-4 mb-4 sm:mb-6"
             >
-              <h2 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-serif font-bold text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.9)]">
+              <h2 className="text-2xl xs:text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-serif font-bold text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.9)]">
                 AMMUUUUU
               </h2>
-              <span className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl filter drop-shadow-[0_0_25px_rgba(244,63,94,0.9)]">
+              <span className="text-2xl xs:text-3xl sm:text-5xl md:text-7xl lg:text-8xl filter drop-shadow-[0_0_25px_rgba(244,63,94,0.9)]">
                 ❤️🎂
               </span>
             </motion.div>
@@ -627,9 +627,9 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2, delay: 0.6 }}
-              className="relative px-6 py-3 rounded-full border border-amber-500/40 bg-black/70 backdrop-blur-md shadow-[0_0_30px_rgba(212,175,55,0.4)] mb-8"
+              className="relative px-4 py-2 sm:px-6 sm:py-3 rounded-full border border-amber-500/40 bg-black/70 backdrop-blur-md shadow-[0_0_30px_rgba(212,175,55,0.4)] mb-6 sm:mb-8"
             >
-              <p className="font-serif italic text-lg sm:text-2xl md:text-3xl text-amber-200 tracking-wide">
+              <p className="font-serif italic text-xs sm:text-xl md:text-3xl text-amber-200 tracking-wide">
                 My Ammuuu • My Happiness • My Everything
               </p>
             </motion.div>

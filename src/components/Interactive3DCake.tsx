@@ -23,14 +23,15 @@ export const Interactive3DCake: React.FC = () => {
     const container = mountRef.current
     if (!container) return
 
-    const width = container.clientWidth || 480
-    const height = 420
+    const width = container.clientWidth || (window.innerWidth < 640 ? 320 : 480)
+    const height = container.clientHeight || (window.innerWidth < 640 ? 360 : 420)
 
     const scene = new THREE.Scene()
     sceneRef.current = scene
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000)
-    camera.position.set(0, 5, 14)
+    const initialCamZ = window.innerWidth < 640 ? 15.5 : 14
+    camera.position.set(0, 5, initialCamZ)
     camera.lookAt(0, 1.5, 0)
 
     const renderer = new THREE.WebGLRenderer({
@@ -395,13 +396,15 @@ export const Interactive3DCake: React.FC = () => {
     window.addEventListener('touchmove', onTouchMove, { passive: true })
     window.addEventListener('touchend', onTouchEnd)
 
-    // Resize handler
+    // Resize handler with mobile/tablet camera distance adjustments
     const handleResize = () => {
       if (!mountRef.current) return
-      const newWidth = mountRef.current.clientWidth || 480
-      camera.aspect = newWidth / height
+      const newWidth = mountRef.current.clientWidth || (window.innerWidth < 640 ? 320 : 480)
+      const newHeight = mountRef.current.clientHeight || (window.innerWidth < 640 ? 360 : 420)
+      camera.aspect = newWidth / newHeight
+      camera.position.z = window.innerWidth < 640 ? 15.5 : 14
       camera.updateProjectionMatrix()
-      renderer.setSize(newWidth, height)
+      renderer.setSize(newWidth, newHeight)
     }
 
     window.addEventListener('resize', handleResize)
@@ -535,7 +538,7 @@ export const Interactive3DCake: React.FC = () => {
         </div>
 
         {/* 3D Cake Canvas Container */}
-        <div className="relative w-full max-w-[560px] h-[430px] rounded-3xl border border-amber-500/30 bg-gradient-to-b from-[#17130f]/80 via-[#0d0a08]/90 to-[#070605] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.9),0_0_40px_rgba(212,175,55,0.15)] backdrop-blur-xl flex items-center justify-center overflow-hidden group">
+        <div className="relative w-full max-w-[560px] h-[360px] sm:h-[430px] rounded-3xl border border-amber-500/30 bg-gradient-to-b from-[#17130f]/80 via-[#0d0a08]/90 to-[#070605] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.9),0_0_40px_rgba(212,175,55,0.15)] backdrop-blur-xl flex items-center justify-center overflow-hidden group">
           {/* Subtle 3D rotate prompt badge */}
           <div className="absolute top-4 left-4 z-10 px-3 py-1 rounded-full bg-black/60 border border-amber-400/20 text-[11px] font-cinzel text-amber-300/80 flex items-center gap-1.5 pointer-events-none">
             <span>✦ Drag to rotate cake</span>
@@ -564,11 +567,11 @@ export const Interactive3DCake: React.FC = () => {
         </div>
 
         {/* Interaction Controls */}
-        <div className="mt-8 flex flex-col sm:flex-row items-center gap-4">
+        <div className="mt-8 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto px-4">
           {!allCandlesBlown ? (
             <button
               onClick={handleMakeWish}
-              className="px-8 py-3.5 rounded-full bg-gold-btn text-amber-950 font-cinzel font-bold text-base tracking-wider uppercase shadow-[0_0_30px_rgba(212,175,55,0.4)] hover:shadow-[0_0_45px_rgba(212,175,55,0.6)] flex items-center gap-2.5 transition-all transform hover:scale-105 cursor-pointer"
+              className="w-full sm:w-auto px-6 sm:px-8 py-3.5 rounded-full bg-gold-btn text-amber-950 font-cinzel font-bold text-sm sm:text-base tracking-wider uppercase shadow-[0_0_30px_rgba(212,175,55,0.4)] hover:shadow-[0_0_45px_rgba(212,175,55,0.6)] flex items-center justify-center gap-2.5 transition-all transform hover:scale-105 cursor-pointer"
             >
               <Wind size={18} />
               <span>Blow Out Candles & Make a Wish</span>
@@ -576,7 +579,7 @@ export const Interactive3DCake: React.FC = () => {
           ) : (
             <button
               onClick={handleRelight}
-              className="px-6 py-3 rounded-full bg-amber-950/60 border border-amber-400/40 text-amber-200 font-cinzel font-semibold text-sm tracking-wider uppercase hover:bg-amber-900/60 flex items-center gap-2 transition-all cursor-pointer"
+              className="w-full sm:w-auto px-6 py-3 rounded-full bg-amber-950/60 border border-amber-400/40 text-amber-200 font-cinzel font-semibold text-xs sm:text-sm tracking-wider uppercase hover:bg-amber-900/60 flex items-center justify-center gap-2 transition-all cursor-pointer"
             >
               <RotateCcw size={16} />
               <span>Relight Candles 🕯️</span>

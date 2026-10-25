@@ -44,10 +44,10 @@ export const FinalCelebration: React.FC<FinalCelebrationProps> = ({ onReplay }) 
           <p className="font-cinzel text-xs sm:text-sm uppercase tracking-[0.3em] text-amber-300">
             Forever In My Heart
           </p>
-          <h2 className="text-4xl sm:text-6xl md:text-7xl font-cinzel font-black text-gold-bright tracking-tight drop-shadow-2xl">
+          <h2 className="text-2xl xs:text-3xl sm:text-5xl md:text-7xl font-cinzel font-black text-gold-bright tracking-tight drop-shadow-2xl">
             You Are Special, Ammuuu ❤️
           </h2>
-          <p className="font-script text-3xl sm:text-4xl md:text-5xl text-rose-400">
+          <p className="font-script text-2xl xs:text-3xl sm:text-4xl md:text-5xl text-rose-400 break-words">
             Happy Birthday, Maaaaaaaaaaaaaaaaaa 💖🫂🎂
           </p>
         </motion.div>
@@ -58,9 +58,9 @@ export const FinalCelebration: React.FC<FinalCelebrationProps> = ({ onReplay }) 
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="max-w-2xl mx-auto p-7 sm:p-9 rounded-3xl gold-card border-amber-400/40 relative"
+          className="max-w-2xl mx-auto p-5 sm:p-9 rounded-2xl sm:rounded-3xl gold-card border-amber-400/40 relative"
         >
-          <p className="font-telugu text-base sm:text-lg text-amber-100 leading-relaxed">
+          <p className="font-telugu text-sm sm:text-lg text-amber-100 leading-relaxed">
             “Oka roju ee distance antha dooram aipoyi, manam kalisi birthdays celebrate chesukune roju vasthundhani hope chesthunna. Appudu nee birthday ni inka beautiful ga celebrate chesukundham. Nuvvu eppudu happy ga undaali, Ammu!”
           </p>
           <div className="w-16 h-0.5 mx-auto bg-amber-400/50 mt-4 mb-2" />
@@ -75,12 +75,12 @@ export const FinalCelebration: React.FC<FinalCelebrationProps> = ({ onReplay }) 
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-5 pt-4"
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-5 pt-4 w-full sm:w-auto px-4"
         >
           {/* Light up the skies button */}
           <button
             onClick={handleGrandCelebration}
-            className="w-full sm:w-auto px-9 py-4 rounded-full bg-gold-btn text-amber-950 font-cinzel font-bold text-base tracking-wider uppercase shadow-[0_0_40px_rgba(212,175,55,0.45)] hover:shadow-[0_0_60px_rgba(212,175,55,0.7)] flex items-center justify-center gap-2.5 transition-all transform hover:scale-105 cursor-pointer"
+            className="w-full sm:w-auto px-6 sm:px-9 py-3.5 sm:py-4 rounded-full bg-gold-btn text-amber-950 font-cinzel font-bold text-sm sm:text-base tracking-wider uppercase shadow-[0_0_40px_rgba(212,175,55,0.45)] hover:shadow-[0_0_60px_rgba(212,175,55,0.7)] flex items-center justify-center gap-2.5 transition-all transform hover:scale-105 cursor-pointer"
           >
             <Sparkles size={18} />
             <span>Light Up The Skies For Ammuuu 🎆</span>
@@ -89,7 +89,7 @@ export const FinalCelebration: React.FC<FinalCelebrationProps> = ({ onReplay }) 
           {/* Replay Option */}
           <button
             onClick={onReplay}
-            className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-black/60 border border-amber-400/40 text-amber-200 font-cinzel font-semibold text-xs uppercase tracking-widest hover:bg-amber-950/40 flex items-center justify-center gap-2 transition-all cursor-pointer"
+            className="w-full sm:w-auto px-6 sm:px-7 py-3 sm:py-3.5 rounded-full bg-black/60 border border-amber-400/40 text-amber-200 font-cinzel font-semibold text-xs uppercase tracking-widest hover:bg-amber-950/40 flex items-center justify-center gap-2 transition-all cursor-pointer"
           >
             <RotateCcw size={15} />
             <span>Experience Surprise Again ✦</span>
