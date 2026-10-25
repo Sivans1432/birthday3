@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Music, Sparkles, Heart, Crown } from 'lucide-react'
+import { Music, Sparkles, Heart, Crown, Volume2, VolumeX, Upload } from 'lucide-react'
 import { BIRTHDAY_CONFIG } from '../config/birthdayData'
 import { romanticAudio } from '../utils/audioManager'
-import { triggerCelebrationCrackerBurst } from '../utils/confettiFireworks'
 
 interface CinematicCountdownOverlayProps {
   onRevealComplete: () => void
@@ -24,6 +23,9 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
 }) => {
   const [isPlayingMusic, setIsPlayingMusic] = useState<boolean>(false)
   const [stage, setStage] = useState<RevealStage>('COUNTDOWN')
+  const [videoSrc, setVideoSrc] = useState<string>(BIRTHDAY_CONFIG.crackersVideo || '/assets/crackers-blast.mp4')
+  const [isVideoMuted, setIsVideoMuted] = useState<boolean>(false)
+  const [videoLoadError, setVideoLoadError] = useState<boolean>(false)
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({
     days: 0,
     hours: 0,
@@ -46,6 +48,8 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
 
   const celebrationTriggeredRef = useRef<boolean>(false)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const videoRef = useRef<HTMLVideoElement | null>(null)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
   const isTestMode = targetTimestamp <= Date.now() + 60000 && targetTimestamp > Date.now() - 30000
 
   // 1. Lock body and html scroll when overlay is active
@@ -60,6 +64,21 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
       document.documentElement.style.overflow = originalHtmlOverflow || ''
     }
   }, [])
+
+  // Transition to fadeout and complete
+  const proceedToFadeOut = useCallback(() => {
+    setStage((currentStage) => {
+      if (currentStage === 'FADING_OUT' || currentStage === 'DONE') return currentStage
+      return 'FADING_OUT'
+    })
+
+    setTimeout(() => {
+      setStage('DONE')
+      document.body.style.overflow = ''
+      document.documentElement.style.overflow = ''
+      onRevealComplete()
+    }, 1500)
+  }, [onRevealComplete])
 
   // 2. Trigger celebration sequence when countdown hits zero
   const triggerCelebrationSequence = useCallback(() => {
@@ -78,45 +97,44 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
     // Step 2: Golden Light Burst
     setStage('BURST')
 
-    // Sound fanfare + wish chimes
+    // Celebration audio fanfare fallback
     try {
       romanticAudio.playCelebrationFanfare()
       romanticAudio.playWishChime()
-      // If user hadn't toggled music, attempt background play
-      romanticAudio.play(BIRTHDAY_CONFIG.audio.src).catch(() => {})
-      setIsPlayingMusic(true)
     } catch {
-      // AudioContext might require user gesture in some browsers
+      // AudioContext fallback
     }
 
-    // Step 3: Launch fireworks, golden crackers, sparkles & confetti
-    triggerCelebrationCrackerBurst()
-
-    // Step 4: After 450ms light burst, reveal huge 3D golden birthday text
-    const celebrateTimer = setTimeout(() => {
+    // Step 3: Play REAL CRACKERS BLAST VIDEO (no paper blast)
+    setTimeout(() => {
       setStage('CELEBRATING')
-    }, 450)
+      if (videoRef.current) {
+        videoRef.current.currentTime = 0
+        videoRef.current.play().catch(() => {
+          // If browser policy blocks audio autoplay, play muted
+          if (videoRef.current) {
+            videoRef.current.muted = true
+            setIsVideoMuted(true)
+            videoRef.current.play().catch(() => {})
+          }
+        })
+      }
+    }, 350)
 
-    // Step 5: Keep reveal visible for ~6 seconds (5-7 seconds specified)
+    // Step 4: After ~7 seconds of real crackers blast celebration, fade out
     const fadeTimer = setTimeout(() => {
-      setStage('FADING_OUT')
-    }, 6500)
-
-    // Step 6: After smooth fade out, complete reveal and show existing website
-    const completeTimer = setTimeout(() => {
-      setStage('DONE')
-      // Restore scroll
-      document.body.style.overflow = ''
-      document.documentElement.style.overflow = ''
-      onRevealComplete()
-    }, 8000)
+      proceedToFadeOut()
+    }, 7500)
 
     return () => {
-      clearTimeout(celebrateTimer)
       clearTimeout(fadeTimer)
-      clearTimeout(completeTimer)
     }
-  }, [onRevealComplete])
+  }, [proceedToFadeOut])
+
+  // Handle when video finishes naturally
+  const handleVideoEnded = () => {
+    proceedToFadeOut()
+  }
 
   // 3. Precision countdown loop (calculates from target timestamp, avoiding drift)
   useEffect(() => {
@@ -152,7 +170,7 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
     return () => clearInterval(timer)
   }, [targetTimestamp, triggerCelebrationSequence])
 
-  // 4. Background Cinematic Canvas: Golden particles, twinkling stars, floating rose petals
+  // 4. Background Canvas: Golden particles, twinkling stars, floating rose petals
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -170,7 +188,6 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
     }
     window.addEventListener('resize', handleResize)
 
-    // Particle types: Gold sparkles, stars, and rose petals
     interface Particle {
       x: number
       y: number
@@ -186,8 +203,7 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
     }
 
     const particles: Particle[] = []
-    const particleCount = Math.min(width < 768 ? 45 : 85, 90)
-
+    const particleCount = Math.min(width < 768 ? 40 : 80, 85)
     const goldColors = ['#ffd700', '#f6d167', '#d4af37', '#ffe89e', '#ffffff']
 
     for (let i = 0; i < particleCount; i++) {
@@ -211,12 +227,10 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
     const render = () => {
       ctx.clearRect(0, 0, width, height)
 
-      // Draw particles
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i]
         ctx.save()
 
-        // Twinkle opacity
         p.opacity += p.fadeSpeed
         if (p.opacity > 0.9 || p.opacity < 0.2) {
           p.fadeSpeed = -p.fadeSpeed
@@ -226,7 +240,6 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
         p.x += p.speedX
         p.angle += p.rotationSpeed
 
-        // Wrap around bounds
         if (p.type === 'petal') {
           if (p.y > height + 20) p.y = -20
         } else {
@@ -240,7 +253,6 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
         ctx.rotate(p.angle)
 
         if (p.type === 'petal') {
-          // Romantic rose petal curve
           ctx.fillStyle = p.color
           ctx.beginPath()
           ctx.moveTo(0, -p.size)
@@ -248,7 +260,6 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
           ctx.bezierCurveTo(-p.size * 0.8, p.size * 0.8, -p.size * 0.8, -p.size * 0.8, 0, -p.size)
           ctx.fill()
         } else if (p.type === 'star') {
-          // Twinkling golden cross star
           ctx.fillStyle = p.color
           ctx.shadowBlur = 8
           ctx.shadowColor = '#ffd700'
@@ -265,7 +276,6 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
           ctx.lineTo(0, p.size * 2)
           ctx.stroke()
         } else {
-          // Soft golden glowing orb
           ctx.fillStyle = p.color
           ctx.shadowBlur = 6
           ctx.shadowColor = '#ffd700'
@@ -294,7 +304,30 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
     setIsPlayingMusic(isNowPlaying)
   }
 
-  // Quick 10-second test countdown trigger for inspection
+  // Toggle video audio mute/unmute
+  const toggleVideoMute = () => {
+    if (videoRef.current) {
+      const newMuted = !videoRef.current.muted
+      videoRef.current.muted = newMuted
+      setIsVideoMuted(newMuted)
+    }
+  }
+
+  // Allow selecting video directly from PC/phone
+  const handleVideoFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const url = URL.createObjectURL(file)
+      setVideoSrc(url)
+      setVideoLoadError(false)
+      // Automatically trigger 5s test preview with the selected video
+      celebrationTriggeredRef.current = false
+      setStage('COUNTDOWN')
+      setTargetTimestamp(Date.now() + 5000)
+    }
+  }
+
+  // Quick 10-second test countdown trigger
   const triggerTestCountdown = () => {
     celebrationTriggeredRef.current = false
     setStage('COUNTDOWN')
@@ -316,11 +349,31 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
         exit={{ opacity: 0 }}
         transition={{ duration: 1.5, ease: 'easeInOut' }}
         className="fixed inset-0 z-50 w-screen h-screen min-h-screen bg-[#050403] text-[#f7eed7] flex flex-col items-center justify-center overflow-hidden select-none"
-        style={{
-          touchAction: 'none'
-        }}
+        style={{ touchAction: 'none' }}
       >
-        {/* Background Canvas Particles */}
+        {/* ============================================================== */}
+        {/* REAL CRACKERS BLAST VIDEO BACKGROUND                           */}
+        {/* ============================================================== */}
+        {(stage === 'BURST' || stage === 'CELEBRATING' || stage === 'FADING_OUT') && (
+          <div className="absolute inset-0 z-10 w-full h-full overflow-hidden pointer-events-none">
+            <video
+              ref={videoRef}
+              src={videoSrc}
+              playsInline
+              autoPlay
+              muted={isVideoMuted}
+              className="w-full h-full object-cover transition-opacity duration-700"
+              onEnded={handleVideoEnded}
+              onError={() => setVideoLoadError(true)}
+            />
+            {/* Cinematic dark grading overlay to keep golden text brilliant and visible */}
+            <div className="absolute inset-0 bg-black/40 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/60 pointer-events-none" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(0,0,0,0.6)_90%)] pointer-events-none" />
+          </div>
+        )}
+
+        {/* Background Canvas Particles (Stars & Petals) */}
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full pointer-events-none z-0"
@@ -331,8 +384,27 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
         <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-black/80 to-transparent pointer-events-none z-0" />
         <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-black/90 to-transparent pointer-events-none z-0" />
 
-        {/* Top Floating Music Controller */}
-        <div className="absolute top-6 right-6 z-30">
+        {/* Top Controls: Music & Video Mute Toggle */}
+        <div className="absolute top-6 right-6 z-30 flex items-center gap-3">
+          {/* Video Audio Unmute button when video is active */}
+          {(stage === 'CELEBRATING' || stage === 'BURST') && (
+            <button
+              onClick={toggleVideoMute}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-full border backdrop-blur-md transition-all cursor-pointer shadow-lg ${
+                isVideoMuted
+                  ? 'border-red-500/60 bg-red-950/40 text-red-200'
+                  : 'border-amber-400/80 bg-amber-500/30 text-amber-200'
+              }`}
+              title={isVideoMuted ? 'Unmute crackers video sound' : 'Mute crackers video sound'}
+            >
+              {isVideoMuted ? <VolumeX size={15} /> : <Volume2 size={15} />}
+              <span className="text-xs font-cinzel tracking-wider uppercase">
+                {isVideoMuted ? 'Unmute Crackers' : 'Crackers Sound On'}
+              </span>
+            </button>
+          )}
+
+          {/* Music Toggle */}
           <button
             onClick={toggleMusic}
             className={`flex items-center gap-2.5 px-4 py-2 rounded-full border backdrop-blur-md transition-all cursor-pointer shadow-lg ${
@@ -350,7 +422,7 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
                   <span className="w-1 bg-amber-400 rounded-full animate-bounce [animation-delay:0.2s] h-2.5" />
                 </div>
                 <span className="text-xs font-cinzel tracking-widest uppercase text-amber-300">
-                  Music Playing
+                  Playing
                 </span>
               </>
             ) : (
@@ -453,7 +525,7 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
         )}
 
         {/* ============================================================== */}
-        {/* STAGE 2 & 3: GRAND CELEBRATION REVEAL (Huge 3D Golden Text)   */}
+        {/* STAGE 2 & 3: GRAND CELEBRATION REVEAL (Over Real Crackers Video)*/}
         {/* ============================================================== */}
         {(stage === 'CELEBRATING' || stage === 'FADING_OUT') && (
           <div className="relative z-20 max-w-5xl w-full px-6 flex flex-col items-center text-center">
@@ -467,7 +539,7 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
               }}
               className="mb-4"
             >
-              <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-amber-400/60 bg-gradient-to-tr from-amber-950/80 via-red-950/60 to-black/80 flex items-center justify-center shadow-[0_0_50px_rgba(212,175,55,0.7)]">
+              <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-amber-400/60 bg-gradient-to-tr from-amber-950/80 via-red-950/60 to-black/80 flex items-center justify-center shadow-[0_0_50px_rgba(212,175,55,0.7)] backdrop-blur-md">
                 <Crown className="w-10 h-10 sm:w-12 sm:h-12 text-amber-300 drop-shadow-[0_0_15px_rgba(246,209,103,0.9)]" />
               </div>
             </motion.div>
@@ -477,7 +549,7 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
               initial={{ scale: 0.6, opacity: 0, y: 30 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-              className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-cinzel font-extrabold tracking-tight text-3d-gold leading-none drop-shadow-[0_0_40px_rgba(212,175,55,0.8)] mb-4"
+              className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-cinzel font-extrabold tracking-tight text-3d-gold leading-none drop-shadow-[0_0_45px_rgba(212,175,55,0.95)] mb-4"
             >
               HAPPY BIRTHDAY
             </motion.h1>
@@ -489,10 +561,10 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
               transition={{ duration: 1.2, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
               className="flex items-center justify-center gap-3 sm:gap-4 mb-6"
             >
-              <h2 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-serif font-bold text-white drop-shadow-[0_0_25px_rgba(255,255,255,0.8)]">
+              <h2 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-serif font-bold text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.9)]">
                 AMMUUUUU
               </h2>
-              <span className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl filter drop-shadow-[0_0_20px_rgba(244,63,94,0.9)]">
+              <span className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl filter drop-shadow-[0_0_25px_rgba(244,63,94,0.9)]">
                 ❤️🎂
               </span>
             </motion.div>
@@ -501,20 +573,33 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, delay: 0.7 }}
-              className="relative px-6 py-3 rounded-full border border-amber-500/40 bg-black/60 backdrop-blur-md shadow-[0_0_30px_rgba(212,175,55,0.3)] mb-8"
+              transition={{ duration: 1.2, delay: 0.6 }}
+              className="relative px-6 py-3 rounded-full border border-amber-500/40 bg-black/70 backdrop-blur-md shadow-[0_0_30px_rgba(212,175,55,0.4)] mb-8"
             >
               <p className="font-serif italic text-lg sm:text-2xl md:text-3xl text-amber-200 tracking-wide">
                 My Ammuuu • My Happiness • My Everything
               </p>
             </motion.div>
 
+            {/* Notice if video file is not yet placed in /assets/crackers-blast.mp4 */}
+            {videoLoadError && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="mb-4 px-4 py-2 rounded-xl bg-amber-950/60 border border-amber-500/40 text-amber-300 text-xs font-sans max-w-md"
+              >
+                Place your crackers blast video as{' '}
+                <span className="font-mono text-white">public/assets/crackers-blast.mp4</span> or click
+                &quot;Select Video File&quot; below.
+              </motion.div>
+            )}
+
             {/* Automatic Transition Notice */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 2, duration: 1 }}
-              className="flex items-center gap-2 text-xs sm:text-sm font-cinzel tracking-widest text-amber-300/70 uppercase"
+              className="flex items-center gap-2 text-xs sm:text-sm font-cinzel tracking-widest text-amber-300/80 uppercase bg-black/50 px-4 py-1.5 rounded-full border border-amber-500/20 backdrop-blur-sm"
             >
               <Sparkles size={14} className="text-amber-400 animate-spin" />
               <span>Entering Your Birthday Universe...</span>
@@ -523,14 +608,32 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
           </div>
         )}
 
-        {/* Bottom Dev / Preview Helper (Discreet, allows quick testing without modifying code) */}
+        {/* Hidden File Input to select/test crackers video easily from device */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="video/mp4,video/webm,video/mov,video/*"
+          onChange={handleVideoFileSelected}
+          className="hidden"
+        />
+
+        {/* Bottom Dev / Preview Helper Toolbar */}
         <div className="absolute bottom-4 inset-x-0 flex items-center justify-center gap-3 z-30">
           <button
-            onClick={triggerTestCountdown}
-            className="px-3 py-1 rounded-full text-[11px] font-cinzel tracking-wider text-amber-400/40 hover:text-amber-300 hover:border-amber-400/40 border border-transparent transition-all cursor-pointer"
-            title="Preview the 10-second countdown completion and reveal sequence"
+            onClick={() => fileInputRef.current?.click()}
+            className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-cinzel tracking-wider text-amber-400/60 hover:text-amber-300 hover:border-amber-400/50 border border-white/10 bg-black/40 backdrop-blur-sm transition-all cursor-pointer"
+            title="Choose a real crackers blast video from your device to test"
           >
-            {isTestMode ? '⏳ Test Mode Active (10s)' : '⚡ Preview 10s Countdown'}
+            <Upload size={12} />
+            <span>Select Crackers Video</span>
+          </button>
+
+          <button
+            onClick={triggerTestCountdown}
+            className="px-3 py-1 rounded-full text-[11px] font-cinzel tracking-wider text-amber-400/60 hover:text-amber-300 hover:border-amber-400/50 border border-white/10 bg-black/40 backdrop-blur-sm transition-all cursor-pointer"
+            title="Preview the 10-second countdown with real crackers video reveal"
+          >
+            {isTestMode ? '⏳ Test Active (10s)' : '⚡ Preview 10s Countdown'}
           </button>
         </div>
       </motion.div>

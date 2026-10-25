@@ -40,6 +40,9 @@ export const BIRTHDAY_CONFIG = {
   // Target: October 27, 2026 at 12:00:00 AM IST (Asia/Kolkata)
   targetTimestampIST: new Date("2026-10-27T00:00:00+05:30").getTime(),
 
+  // Real crackers blast video for countdown completion
+  crackersVideo: "/assets/crackers-blast.mp4",
+
   // Audio track config
   audio: {
     title: "A Thousand Memories (Instrumental)",
