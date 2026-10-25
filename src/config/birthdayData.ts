@@ -36,7 +36,9 @@ export const BIRTHDAY_CONFIG = {
   specialNames: ["Ammuuu", "Bangaram", "Maa", "My Universe"],
   birthdayMonth: 9, // 0-indexed: 9 = October
   birthdayDay: 27,
-  targetDateIso: "2026-10-27T00:00:00",
+  targetDateIso: "2026-10-27T00:00:00+05:30",
+  // Target: October 27, 2026 at 12:00:00 AM IST (Asia/Kolkata)
+  targetTimestampIST: new Date("2026-10-27T00:00:00+05:30").getTime(),
 
   // Audio track config
   audio: {
@@ -50,16 +52,20 @@ export const BIRTHDAY_CONFIG = {
     salutation: "❤️🥹 Happy Birthday, Ammu 🎂💖",
     paragraphs: [
       "First of all, I am really sorry Ammu… 😔❤️ Nii birthday ki nee pakkana undi, nee face lo smile chusi, ninnu happy ga chesi, nee birthday ni neetho kalisi celebrate cheyyalani chala anukunna. Kaani unfortunately, ee roju nenu nee daggariki ralekapothunna. 🥺💔",
+      "Ninnu chala miss chesthunnanu Ammuuu… 😢💖 Nee face lo smile chusi, nee voice ni vinipinchukoni, nee pakkana undi kalisi happy ga undali anukunna. Kaani distance tho nenu ninnu kalavaledu. 😔💔",
+      "Ee roju nenu nee pakkana undakapoyina, ninnu happy ga chesi, nee birthday ni special ga cheyyalani chala anukunna Ammuuu. 😢💖 Kaani distance tho nenu ninnu kalavaledu. 😔💔",
+      "Naa heart lo neeku kosam chala love undi Ammuuu… ❤️🥹 Nee smile, nee voice, nee presence, anni naaku chala precious Ammuuu. Naa life lo neeku kosam chala special place undi. 💖",
       "Ninnu birthday roju hug chesukoni, “Happy Birthday Maa” ani nee chevilo cheppalani, nee face lo aa happiness chudalani entho aashapaddanu. Kaani ee distance valla ippudu ivanni cheyyalekapothunna. Ninnu miss avuthunna feeling ni words lo cheppalenu. 😭❤️",
       "Nuvvu naaku entha special oo neeku telusa? Naa life lo nuvvu oka ordinary person kaadhu Maa.... Naa happiness lo oka part, naa thoughts lo oka part, naa heart ki chala close ayina person vi. ❤️🫂 Nuvvu happy ga unte naaku happiness, nuvvu sad ga unte naaku kuda baadha vesthundhi.",
       "Ee birthday roju nee pakkana lekapoyina, naa heart matram nee daggare undhi. 💖 Distance mana madhya undochu, kaani nuvvu naaku entha special oo maatram eppatiki maaradhu. Ninnu birthday roju personally wish cheyyalekapothunna ani naaku chala badha ga undhi. Please nannu ardham chesukuntav ani hope chesthunna, Ammu. 🥺❤️",
       "Nuvvu ee roju full happy ga undaali, chala navvaali, nee favourite things anni enjoy cheyyaali. Nee life lo nuvvu anukunna dreams anni nijam avvaali. Nee face lo smile eppudu alage undaali. God ninnu eppudu happy ga, healthy ga unchaali ani manaspoorthiga korukuntunna. 🙏🏻💗",
-      "I am sorry, Maa, nii special day roju nee pakkana undalekapothunna. 😔❤️ Kaani okati gurthupettuko… Ninnu wish cheyyadaniki nenu nee pakkana lekapoyina, nee happiness kosam korukune manasutho ikkade unna. Ninnu miss avuthunna, nee birthday ni neetho celebrate cheyyalekapothunna ane feeling naaku eppatiki gurthundipothundhi. 🥹💞",
+      "I am Sorry ,Maa, nii special day roju nee pakkana undalekapothunna. 😔❤️ Kaani okati gurthupettuko.... Ninnu wish cheyyadaniki nenu nee pakkana lekapoyinna,nee happiness kosam korukune manasutho ikkada unna.Ninnu miss avuthunna, nee birthday nii neetho celebrate cheyyalekapothunna ane feeling naaku eppatiki gurthundipothundhi. 🥹💞",
       "Oka roju ee distance antha dooram aipoyi, manam kalisi birthdays celebrate chesukune roju vasthundhani hope chesthunna. Appudu nee birthday ni inka beautiful ga celebrate chesukundham. ❤️🫶🏻",
       "Once again, Happiest Birthday to my Ammuuuu, my happiness, my Bangaram! 🎂🌹💋",
       "Nuvvu eppudu happy ga undaali, nee dreams anni fulfil avvaali, nee life antha love tho, happiness tho nindipovaali.",
       "I may not be beside you today, but you are always close to my heart. I miss you so much, Ammuuu ❤️🥹",
       "Love you so much! Happy Birthday, Maaaaaaaaaaaaaaaaaa 💖🫂🎂"
+
     ],
     signoff: "Forever Yours, With All My Heart ❤️"
   },

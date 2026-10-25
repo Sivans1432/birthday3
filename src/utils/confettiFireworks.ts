@@ -73,3 +73,65 @@ export function triggerGoldenSparks(x: number = 0.5, y: number = 0.5) {
     startVelocity: 25
   })
 }
+
+export function triggerCelebrationCrackerBurst() {
+  const duration = 6 * 1000
+  const animationEnd = Date.now() + duration
+  const colors = ['#ffd700', '#ffb703', '#d4af37', '#ffffff', '#ff3366', '#e63946']
+
+  // Initial grand cracker blast
+  confetti({
+    particleCount: 110,
+    spread: 120,
+    origin: { x: 0.5, y: 0.4 },
+    colors: ['#ffe484', '#d4af37', '#ffffff', '#ff3366'],
+    shapes: ['star', 'circle'],
+    scalar: 1.5,
+    startVelocity: 45
+  })
+
+  const interval = window.setInterval(() => {
+    const timeLeft = animationEnd - Date.now()
+    if (timeLeft <= 0) {
+      clearInterval(interval)
+      return
+    }
+
+    const particleCount = 28 * (timeLeft / duration)
+
+    // Left firework cracker
+    confetti({
+      particleCount,
+      angle: 60,
+      spread: 75,
+      origin: { x: 0.08, y: 0.7 },
+      colors,
+      shapes: ['star', 'circle'],
+      scalar: 1.2
+    })
+
+    // Right firework cracker
+    confetti({
+      particleCount,
+      angle: 120,
+      spread: 75,
+      origin: { x: 0.92, y: 0.7 },
+      colors,
+      shapes: ['star', 'circle'],
+      scalar: 1.2
+    })
+
+    // Center star burst
+    if (Math.random() < 0.4) {
+      confetti({
+        particleCount: 35,
+        spread: 360,
+        origin: { x: 0.35 + Math.random() * 0.3, y: 0.25 + Math.random() * 0.25 },
+        colors: ['#ffd700', '#fff3b0', '#ff2e63'],
+        shapes: ['star'],
+        scalar: 1.4,
+        startVelocity: 30
+      })
+    }
+  }, 250)
+}

@@ -119,6 +119,30 @@ class RomanticAudioEngine {
     })
   }
 
+  // Play grand triumphant celebration sound effect
+  public playCelebrationFanfare() {
+    this.initContext()
+    if (!this.ctx || !this.masterGain) return
+
+    // Festive harmonious fanfare chords
+    const notes = [
+      { f: 523.25, t: 0.0, d: 0.35, v: 0.28 },  // C5
+      { f: 659.25, t: 0.12, d: 0.35, v: 0.28 }, // E5
+      { f: 783.99, t: 0.24, d: 0.45, v: 0.30 }, // G5
+      { f: 1046.50, t: 0.38, d: 0.8, v: 0.35 }, // C6
+      // Grand ringing celebration chord
+      { f: 659.25, t: 0.72, d: 3.0, v: 0.32 },  // E5
+      { f: 783.99, t: 0.72, d: 3.0, v: 0.32 },  // G5
+      { f: 1046.50, t: 0.72, d: 3.2, v: 0.36 }, // C6
+      { f: 1318.51, t: 0.72, d: 3.5, v: 0.32 }  // E6
+    ]
+
+    const now = this.ctx.currentTime
+    notes.forEach((item) => {
+      this.playRomanticNote(item.f, now + item.t, item.d, item.v)
+    })
+  }
+
   public async play(srcUrl?: string): Promise<boolean> {
     this.initContext()
     this.isPlaying = true

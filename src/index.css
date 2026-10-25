@@ -183,3 +183,45 @@
 .pulse-heart {
   animation: heartPulse 2.2s infinite ease-in-out;
 }
+
+/* 3D Golden text with deep multi-layered metallic shadow */
+.text-3d-gold {
+  background: linear-gradient(180deg, #ffffff 0%, #fff6d1 18%, #f6d167 40%, #d4af37 60%, #996515 85%, #593808 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 35px rgba(246, 209, 103, 0.75)) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.9));
+}
+
+/* Cinematic light burst */
+@keyframes lightBurstPulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  25% {
+    opacity: 1;
+    transform: scale(1.6);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(3.2);
+  }
+}
+
+.animate-light-burst {
+  animation: lightBurstPulse 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Floating animation for countdown elements */
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}
+
+.animate-float-slow {
+  animation: floatSlow 5s ease-in-out infinite;
+}
