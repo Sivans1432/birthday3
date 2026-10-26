@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Music, Sparkles, Heart, Crown, Volume2, VolumeX, Delete, X } from 'lucide-react'
+import { Sparkles, Heart, Crown, Volume2, VolumeX, Delete, X } from 'lucide-react'
 import { BIRTHDAY_CONFIG } from '../config/birthdayData'
 import { romanticAudio } from '../utils/audioManager'
 
@@ -23,7 +23,6 @@ const SECRET_PIN = '4410'
 export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps> = ({
   onRevealComplete
 }) => {
-  const [isPlayingMusic, setIsPlayingMusic] = useState<boolean>(false)
   const [stage, setStage] = useState<RevealStage>('COUNTDOWN')
   const [videoSrc] = useState<string>(BIRTHDAY_CONFIG.crackersVideo || '/assets/crackers-blast.mp4')
   const [isVideoMuted, setIsVideoMuted] = useState<boolean>(false)
@@ -322,12 +321,6 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
     }
   }, [])
 
-  // Toggle romantic background music
-  const toggleMusic = () => {
-    const isNowPlaying = romanticAudio.toggle(BIRTHDAY_CONFIG.audio.src)
-    setIsPlayingMusic(isNowPlaying)
-  }
-
   // Toggle video audio mute/unmute
   const toggleVideoMute = () => {
     if (videoRef.current) {
@@ -459,10 +452,9 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
         <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-black/80 to-transparent pointer-events-none z-0" />
         <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-black/90 to-transparent pointer-events-none z-0" />
 
-        {/* Top Controls: Music & Video Mute Toggle */}
-        <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-30 flex items-center gap-2 sm:gap-3">
-          {/* Video Audio Unmute button when video is active */}
-          {(stage === 'CELEBRATING' || stage === 'BURST') && (
+        {/* Top Controls: Crackers Video Sound Toggle (Only visible during fireworks blast celebration) */}
+        {(stage === 'CELEBRATING' || stage === 'BURST') && (
+          <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-30 flex items-center gap-2 sm:gap-3">
             <button
               onClick={toggleVideoMute}
               className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-full border backdrop-blur-md transition-all cursor-pointer shadow-lg text-xs ${
@@ -477,39 +469,8 @@ export const CinematicCountdownOverlay: React.FC<CinematicCountdownOverlayProps>
                 {isVideoMuted ? 'Unmute' : 'Sound On'}
               </span>
             </button>
-          )}
-
-          {/* Music Toggle */}
-          <button
-            onClick={toggleMusic}
-            className={`flex items-center gap-1.5 sm:gap-2.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border backdrop-blur-md transition-all cursor-pointer shadow-lg text-xs ${
-              isPlayingMusic
-                ? 'border-amber-400/70 bg-amber-500/20 text-amber-200 shadow-[0_0_20px_rgba(212,175,55,0.4)]'
-                : 'border-amber-500/30 bg-black/60 text-amber-200/80 hover:border-amber-400/60'
-            }`}
-            title={isPlayingMusic ? 'Mute Music' : 'Play Romantic Music'}
-          >
-            {isPlayingMusic ? (
-              <>
-                <div className="flex items-end gap-1 h-3.5">
-                  <span className="w-0.5 sm:w-1 bg-amber-400 rounded-full animate-bounce [animation-delay:0.1s] h-3" />
-                  <span className="w-0.5 sm:w-1 bg-amber-400 rounded-full animate-bounce [animation-delay:0.3s] h-4" />
-                  <span className="w-0.5 sm:w-1 bg-amber-400 rounded-full animate-bounce [animation-delay:0.2s] h-2.5" />
-                </div>
-                <span className="text-[11px] sm:text-xs font-cinzel tracking-widest uppercase text-amber-300">
-                  Playing
-                </span>
-              </>
-            ) : (
-              <>
-                <Music size={14} className="text-amber-400 animate-pulse" />
-                <span className="text-[11px] sm:text-xs font-cinzel tracking-widest uppercase">
-                  Music 🎵
-                </span>
-              </>
-            )}
-          </button>
-        </div>
+          </div>
+        )}
 
         {/* ============================================================== */}
         {/* CINEMATIC LIGHT BURST FLASH EFFECT (When countdown reaches 0)  */}

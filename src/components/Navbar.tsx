@@ -10,7 +10,7 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ onReplayIntro }) => {
 
-  const [isPlaying, setIsPlaying] = useState<boolean>(false)
+  const [isPlaying, setIsPlaying] = useState<boolean>(() => romanticAudio.getIsPlaying())
   const [volume, setVolume] = useState<number>(0.7)
   const [isScrolled, setIsScrolled] = useState<boolean>(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false)
@@ -22,6 +22,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onReplayIntro }) => {
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // Sync music playing state when music starts/stops
+  useEffect(() => {
+    const syncPlayingState = () => {
+      setIsPlaying(romanticAudio.getIsPlaying())
+    }
+    syncPlayingState()
+    const timer = setInterval(syncPlayingState, 500)
+    return () => clearInterval(timer)
   }, [])
 
   const toggleMusic = () => {
