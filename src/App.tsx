@@ -9,8 +9,6 @@ import { LoveLetterSection } from './components/LoveLetterSection'
 import { VirtualGiftBox } from './components/VirtualGiftBox'
 import { FinalCelebration } from './components/FinalCelebration'
 import { CinematicCountdownOverlay } from './components/CinematicCountdownOverlay'
-import { romanticAudio } from './utils/audioManager'
-import { BIRTHDAY_CONFIG } from './config/birthdayData'
 
 export const App: React.FC = () => {
   const mainContentRef = useRef<HTMLDivElement>(null)
@@ -20,12 +18,6 @@ export const App: React.FC = () => {
   const handleRevealComplete = useCallback(() => {
     setIsWebsiteRevealed(true)
     setShowCountdownOverlay(false)
-    // Start romantic background music automatically after countdown celebration reveals website
-    try {
-      romanticAudio.play(BIRTHDAY_CONFIG.audio.src)
-    } catch {
-      // AudioContext fallback
-    }
   }, [])
 
   const handleEnterSurprise = () => {
